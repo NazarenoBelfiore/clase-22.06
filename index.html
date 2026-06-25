@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 
-<html class="dark scroll-smooth" lang="en"><head>
+<html class="dark scroll-smooth" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Venzo Amphion</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.36/dist/lenis.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -88,12 +89,46 @@
                         "label-mono": ["12px", {"lineHeight": "140%", "letterSpacing": "0.1em", "fontWeight": "400"}],
                         "display-lg": ["84px", {"lineHeight": "90%", "letterSpacing": "-0.04em", "fontWeight": "700"}],
                         "data-point": ["14px", {"lineHeight": "120%", "letterSpacing": "0em", "fontWeight": "700"}]
+                    },
+                    "keyframes": {
+                        "slide-in": {
+                            "0%": { "transform": "translateX(-15%)", "filter": "brightness(0.6)" },
+                            "100%": { "transform": "translateX(0)", "filter": "brightness(1)" }
+                        },
+                        "fade-in": {
+                            "0%": { "opacity": "0", "transform": "translateY(20px)" },
+                            "100%": { "opacity": "1", "transform": "translateY(0)" }
+                        },
+                        "fade-in-down": {
+                            "0%": { "opacity": "0", "transform": "translateY(-20px)" },
+                            "100%": { "opacity": "1", "transform": "translateY(0)" }
+                        }
                     }
                 }
             }
         }
     </script>
 <style>
+        /* Custom delicate scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1b110e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a3126;
+            border-radius: 9999px;
+            border: 1px solid #1b110e;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fe6b00;
+        }
+
+        html {
+            scroll-behavior: initial !important;
+        }
+
         body {
             background-color: #1b110e;
             color: #f3ded9;
@@ -158,23 +193,103 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        .specs-cover-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 56.25vw;
+            min-height: 100vh;
+            min-width: 177.78vh;
+            pointer-events: none;
+        }
+        
+        .specs-cover-container > * {
+            pointer-events: auto;
+        }
+
+        /* Interactive Hotspots styling */
+        .hotspot-item.hotspot-active .hotspot-tooltip {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        .hotspot-item.hotspot-active .hotspot-dot {
+            background-color: #fe6b00 !important;
+            transform: scale(1.2);
+        }
+
+        /* Tooltip directional positioning and transitions */
+        .tooltip-top {
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translate(-50%, 0.5rem);
+        }
+        .hotspot-item.hotspot-active .tooltip-top {
+            transform: translate(-50%, 0) !important;
+        }
+
+        .tooltip-bottom {
+            top: 1.5rem;
+            left: 50%;
+            transform: translate(-50%, -0.5rem);
+        }
+        .hotspot-item.hotspot-active .tooltip-bottom {
+            transform: translate(-50%, 0) !important;
+        }
+
+        .tooltip-left {
+            right: 1.5rem;
+            top: 50%;
+            transform: translate(0.5rem, -50%);
+        }
+        .hotspot-item.hotspot-active .tooltip-left {
+            transform: translate(0, -50%) !important;
+        }
+
+        .tooltip-right {
+            left: 1.5rem;
+            top: 50%;
+            transform: translate(-0.5rem, -50%);
+        }
+        .hotspot-item.hotspot-active .tooltip-right {
+            transform: translate(0, -50%) !important;
+        }
     </style>
 </head>
-<body class="antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<body class="antialiased selection:bg-secondary-container selection:text-on-secondary-container" spellcheck="false">
 <!-- TopNavBar -->
-<nav class="absolute top-0 left-0 w-full z-50 backdrop-blur-md bg-surface/10 transition-all ease-out duration-500">
-    <div class="max-w-[90rem] mx-auto w-full flex justify-between items-center px-edge-margin py-4 md:py-8">
-        <div class="font-headline-md text-[24px] tracking-widest text-on-surface uppercase">VENZO AMPHION</div>
-        <div class="hidden md:flex gap-8">
-            <a class="text-secondary font-bold border-b border-secondary pb-1 font-label-mono text-label-mono uppercase hover:text-secondary duration-300" href="#experience">EXPERIENCE</a>
-            <a class="text-on-surface/80 font-medium hover:text-on-surface transition-colors font-label-mono text-label-mono uppercase hover:text-secondary duration-300" href="#performance">modalidades</a>
-            <a class="text-on-surface/80 font-medium hover:text-on-surface transition-colors font-label-mono text-label-mono uppercase hover:text-secondary duration-300" href="#mastery">maestría</a>
-            <a class="text-on-surface/80 font-medium hover:text-on-surface transition-colors font-label-mono text-label-mono uppercase hover:text-secondary duration-300" href="#components">componenetes</a>
-            <a class="text-on-surface/80 font-medium hover:text-on-surface transition-colors font-label-mono text-label-mono uppercase hover:text-secondary duration-300" href="#conversion">reserva ya</a>
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all ease-out duration-300 bg-transparent border-b border-transparent opacity-0 animate-[fade-in-down_0.6s_ease-out_1.3s_forwards] px-edge-margin">
+    <div id="navbar-container" class="max-w-[90rem] mx-auto w-full flex justify-between items-center py-4 md:py-6 transition-all ease-out duration-300">
+        <a class="font-headline-md text-[20px] md:text-[24px] tracking-widest text-on-surface uppercase hover:text-secondary transition-colors duration-300" href="#experience">VENZO AMPHION</a>
+        <div class="hidden md:flex gap-8 items-center">
+            <a class="nav-link relative pb-1 font-label-mono text-label-mono uppercase transition-all duration-300 text-on-surface/80 font-bold hover:text-secondary" href="#performance">
+                MODALIDADES
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-secondary scale-x-0 origin-left transition-transform duration-300"></span>
+            </a>
+            <a class="nav-link relative pb-1 font-label-mono text-label-mono uppercase transition-all duration-300 text-on-surface/80 font-bold hover:text-secondary" href="#mastery">
+                MAESTRÍA
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-secondary scale-x-0 origin-left transition-transform duration-300"></span>
+            </a>
+            <a class="nav-link relative pb-1 font-label-mono text-label-mono uppercase transition-all duration-300 text-on-surface/80 font-bold hover:text-secondary" href="#specs-interactive">
+                COMPONENTES
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-secondary scale-x-0 origin-left transition-transform duration-300"></span>
+            </a>
+            <a class="nav-link relative pb-1 font-label-mono text-label-mono uppercase transition-all duration-300 text-on-surface/80 font-bold hover:text-secondary" href="#components">
+                TECNOLOGÍA
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-secondary scale-x-0 origin-left transition-transform duration-300"></span>
+            </a>
+            <a class="nav-link relative pb-1 font-label-mono text-label-mono uppercase transition-all duration-300 text-on-surface/80 font-bold hover:text-secondary" href="#customizer">
+                ASPECTOS
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-secondary scale-x-0 origin-left transition-transform duration-300"></span>
+            </a>
+            <a class="nav-link relative pb-1 font-label-mono text-label-mono uppercase transition-all duration-300 text-on-surface/80 font-bold hover:text-secondary" href="#conversion">
+                RESERVA YA
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-secondary scale-x-0 origin-left transition-transform duration-300"></span>
+            </a>
         </div>
-        <button class="hidden md:block bg-secondary-container text-white px-6 py-3 rounded-full font-label-mono text-label-mono uppercase tracking-widest hover:bg-secondary transition-colors duration-300">
-            Proveedores cercanos
-        </button>
         <button class="md:hidden text-on-surface">
             <span class="material-symbols-outlined">menu</span>
         </button>
@@ -182,15 +297,18 @@
 </nav>
 <main>
 <!-- Módulo 1 (Hero) -->
-<section class="relative min-h-screen flex items-center justify-center bg-primary-container overflow-hidden pt-24 pb-section-gap" id="experience">
-<div class="absolute inset-0 z-0 opacity-90 transition-all duration-1000 ease-out">
-    <img class="w-full h-full object-cover object-[center_62%] md:object-[center_55%]" src="assets/bici.png"/>
+<section class="relative min-h-screen flex items-center justify-start bg-surface overflow-hidden pt-24 pb-section-gap" id="experience">
+<div class="absolute inset-0 z-0 opacity-100 transition-all duration-1000 ease-out">
+    <video autoplay muted playsinline class="w-full h-full object-cover scale-[1.05] origin-top-left">
+        <source src="assets/video169.mp4" type="video/mp4" />
+    </video>
 </div>
-<div class="absolute inset-0 bg-gradient-to-b from-primary-container/30 via-transparent to-surface z-0"></div>
-<div class="relative z-10 w-full px-edge-margin flex flex-col items-center text-center mt-auto pb-16 md:pb-24">
-<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-white mb-2 tracking-tighter uppercase">CONTROL ABSOLUTO</h1>
-<p class="font-headline-md text-[24px] md:text-[42px] text-secondary mb-12 tracking-tight uppercase font-bold">EN CUALQUIER RELIEVE</p>
-<div class="flex flex-col sm:flex-row gap-6 justify-center items-center w-full">
+<div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(27,17,14,0.1)_0%,rgba(27,17,14,0)_30%,rgba(27,17,14,0.6)_70%,rgba(27,17,14,1)_100%)] z-0"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-[#1b110e]/75 via-[#1b110e]/20 to-transparent z-0"></div>
+<div class="relative z-10 w-full px-edge-margin md:pl-16 lg:pl-24 xl:pl-32 flex flex-col items-start text-left mt-auto pb-24 md:pb-36 max-w-4xl md:max-w-3xl">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-white mb-4 tracking-tighter uppercase leading-none opacity-0 animate-[fade-in_0.6s_ease-out_1.5s_forwards]">CONTROL ABSOLUTO</h1>
+<p class="font-headline-md text-[24px] md:text-[36px] text-secondary mb-10 tracking-tight uppercase font-bold leading-tight opacity-0 animate-[fade-in_0.6s_ease-out_1.6s_forwards]">EN CUALQUIER RELIEVE</p>
+<div class="flex flex-col sm:flex-row gap-6 justify-start items-center w-full opacity-0 animate-[fade-in_0.6s_ease-out_1.8s_forwards]">
     <button class="w-full sm:w-48 h-14 flex items-center justify-center bg-white/10 backdrop-blur-sm text-white rounded-full font-label-mono text-label-mono hover:bg-white/20 transition-all duration-300 border border-white/20">
         DESCUBRE MÁS
     </button>
@@ -200,19 +318,19 @@
 </div>
 </div>
 </section>
-<!-- Módulo 2 (Performance Profile) -->
-<section class="py-12 md:py-16 px-edge-margin bg-surface" id="performance">
+<!-- Módulo 2 (Modalidades) -->
+<section class="py-24 md:py-36 px-edge-margin bg-surface" id="performance">
 <div class="max-w-[90rem] mx-auto">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-internal-gap">
 <!-- Card: Amateur -->
 <div class="relative group overflow-hidden rounded-xl aspect-[4/5] md:aspect-[4/3] md:max-h-[500px] flex flex-col justify-end p-8 bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] shadow-surface transition-all duration-500 reveal-on-scroll">
     <div class="absolute inset-0 z-0">
-        <img alt="Amateur MTB" class="w-full h-full object-cover grayscale opacity-40 transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:opacity-90 group-hover:scale-[1.02]" src="assets/amateur.png"/>
-        <div class="absolute inset-0 opacity-60 mix-blend-multiply bg-[#4a3126]"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-surface opacity-90 transition-opacity duration-700 ease-out group-hover:opacity-70"></div>
+        <img alt="Amateur MTB" class="w-full h-full object-cover grayscale opacity-40 transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-[1.02]" src="assets/amateur.png"/>
+        <div class="absolute inset-0 opacity-60 group-hover:opacity-10 mix-blend-multiply bg-[#4a3126] transition-all duration-700 ease-out"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-surface opacity-90 transition-opacity duration-700 ease-out group-hover:opacity-50"></div>
     </div>
-    <div class="relative z-10 w-full">
-        <span class="inline-block font-label-mono text-[11px] text-on-secondary-container bg-secondary-container px-3 py-1 rounded-full tracking-[0.15em] mb-4 uppercase font-bold">EL COMIENZO</span>
+    <div class="relative z-10 w-full opacity-40 group-hover:opacity-100 transition-opacity duration-500">
+        <span class="inline-block font-label-mono text-[11px] text-white/80 bg-transparent border border-white/20 group-hover:bg-secondary-container group-hover:border-transparent group-hover:text-white px-3 py-1 rounded-full tracking-[0.15em] mb-4 uppercase font-bold transition-all duration-300">EL COMIENZO</span>
         <h2 class="font-headline-md text-[28px] md:text-[32px] text-white font-bold uppercase leading-tight mb-4 tracking-tight">PARA LOS QUE DEJAN EL ASFALTO ATRÁS.</h2>
         <p class="font-body-lg text-[16px] text-on-surface-variant max-w-sm">Tu puerta de entrada al Mountain Bike real.</p>
     </div>
@@ -220,12 +338,12 @@
 <!-- Card: Pro -->
 <div class="relative group overflow-hidden rounded-xl aspect-[4/5] md:aspect-[4/3] md:max-h-[500px] flex flex-col justify-end p-8 bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] shadow-surface transition-all duration-500 reveal-on-scroll">
     <div class="absolute inset-0 z-0">
-        <img alt="Pro MTB" class="w-full h-full object-cover grayscale opacity-40 transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:opacity-90 group-hover:scale-[1.02]" src="assets/pro.png"/>
-        <div class="absolute inset-0 opacity-60 mix-blend-multiply bg-[#4a3126]"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-surface opacity-90 transition-opacity duration-700 ease-out group-hover:opacity-70"></div>
+        <img alt="Pro MTB" class="w-full h-full object-cover grayscale opacity-40 transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-[1.02]" src="assets/pro.png"/>
+        <div class="absolute inset-0 opacity-60 group-hover:opacity-10 mix-blend-multiply bg-[#4a3126] transition-all duration-700 ease-out"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-surface opacity-90 transition-opacity duration-700 ease-out group-hover:opacity-50"></div>
     </div>
-    <div class="relative z-10 w-full">
-        <span class="inline-block font-label-mono text-[11px] text-on-secondary-container bg-secondary-container px-3 py-1 rounded-full tracking-[0.15em] mb-4 uppercase font-bold">EL LÍMITE</span>
+    <div class="relative z-10 w-full opacity-40 group-hover:opacity-100 transition-opacity duration-500">
+        <span class="inline-block font-label-mono text-[11px] text-white/80 bg-transparent border border-white/20 group-hover:bg-secondary-container group-hover:border-transparent group-hover:text-white px-3 py-1 rounded-full tracking-[0.15em] mb-4 uppercase font-bold transition-all duration-300">EL LÍMITE</span>
         <h2 class="font-headline-md text-[28px] md:text-[32px] text-white font-bold uppercase leading-tight mb-4 tracking-tight">PARA LOS QUE EXIGEN EL MÁXIMO MILÍMETRO DE TRACCIÓN.</h2>
         <p class="font-body-lg text-[16px] text-on-surface-variant max-w-sm">Tu herramienta para destruir tus propios marcadores.</p>
     </div>
@@ -233,122 +351,393 @@
 </div>
 </div>
 </section>
-<!-- Módulo 3 (Absolute Mastery) - Redesigned -->
-<section class="relative bg-background overflow-hidden min-h-[85vh] md:max-h-[900px] flex items-center py-12 md:py-16 px-edge-margin" id="mastery">
-<!-- Background Layer -->
-<div class="relative z-10 max-w-[90rem] mx-auto flex flex-col lg:flex-row gap-16 lg:items-start w-full">
-<!-- Editorial Typography Side -->
-<div class="w-full lg:w-1/2 flex flex-col">
-<div class="relative mb-12 reveal-on-scroll">
-<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg uppercase mb-6">
-    <span class="block text-white">MAESTRÍA</span>
-    <span class="block text-secondary">ABSOLUTA</span>
-</h2>
-<div class="mt-8 pl-1 border-l-2 border-secondary-container">
-<p class="font-body-lg text-on-surface-variant max-w-md">
-                                Una máquina esculpida por el viento y perfeccionada por la ingeniería orgánica. La integración total define una silueta sin fricción innecesaria.
-                            </p>
-</div>
-</div>
-<!-- Modern Spec Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
-<div class="bg-surface-container-high/40 backdrop-blur-md p-6 border border-white/5 rounded-xl reveal-on-scroll">
-<span class="font-label-mono text-[10px] text-secondary uppercase tracking-[0.2em] block mb-2">Peso del Cuadro</span>
-<div class="flex items-baseline gap-2">
-<span class="font-display-lg text-[48px] text-white leading-none spec-number" data-target-value="890">0</span>
-<span class="font-label-mono text-secondary-container">g</span>
-</div>
-<div class="mt-4 w-full h-[2px] bg-white/10 relative">
-<div class="absolute top-0 left-0 h-full bg-secondary-container transition-all duration-1000 ease-out spec-bar" data-target-width="85%" style="width: 0%"></div>
-</div>
-</div>
-<div class="bg-surface-container-high/40 backdrop-blur-md p-6 border border-white/5 rounded-xl reveal-on-scroll">
-<span class="font-label-mono text-[10px] text-secondary uppercase tracking-[0.2em] block mb-2">Rigidez Torsional</span>
-<div class="flex items-baseline gap-2">
-<span class="font-display-lg text-[48px] text-white leading-none spec-number" data-target-value="14" data-prefix="+">+0</span>
-<span class="font-label-mono text-secondary-container">%</span>
-</div>
-<div class="mt-4 w-full h-[2px] bg-white/10 relative">
-<div class="absolute top-0 left-0 h-full bg-secondary-container transition-all duration-1000 ease-out spec-bar" data-target-width="92%" style="width: 0%"></div>
-</div>
-</div>
-</div>
-<div class="mt-8 flex items-center gap-4 group cursor-pointer w-fit">
-<div class="w-12 h-12 rounded-full border border-secondary flex items-center justify-center transition-transform group-hover:scale-110">
-<span class="material-symbols-outlined text-secondary">play_arrow</span>
-</div>
-<span class="font-label-mono text-label-mono uppercase tracking-widest text-white">Ver Documental Técnico</span>
-</div>
-</div>
-<!-- High Impact Visual Side -->
-<div class="w-full lg:w-1/2 relative">
-<div class="relative aspect-square md:aspect-[4/3] md:max-h-[500px] rounded-3xl overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] border border-white/10 group">
-<img alt="Detail Macro" class="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhP1eFYFD7X3Ed3dvOKR0DT9Og_bTYrlhuxra1f2iYmD1PyX_X7KPRddM8x2oJvgPsEjCU_xjv9qw-NGunpTuJZa-O5lJORQEbbEq5YeCelruS_K4ytzgqrmcLu1liHgzULU2hGS7dT87-xPWxJXo5lRaZDPoe0GtvcTd-vlOCxhfe69BQJJztbPosfnTISvG1p_c65ZTqRnN2yOm9SeXfgppAlKBUcOlWkhtZMDvDPl33MBcBNRsXc4DcUyOzTycj4Hr-x4i__Go"/>
-<!-- Technical Overlays with Glassmorphism -->
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-12 left-12 right-12">
-<div class="bg-black/30 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
-<div class="flex justify-between items-center mb-4">
-<h4 class="font-label-mono text-white text-[12px] tracking-[0.3em] uppercase">Aerodinámica Optimizada</h4>
-<span class="font-data-point text-secondary-container">-8W @ 45km/h</span>
-</div>
-<p class="font-body-lg text-[13px] text-on-surface-variant leading-relaxed">
-                                    El enrutamiento interno completo reduce la turbulencia en el cockpit un 22% respecto a la generación anterior.
-                                </p>
-</div>
-</div>
-<!-- Technical Hotspots -->
-<div class="absolute top-1/4 right-1/4 group/hotspot">
-<div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-<div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10"></div>
-<div class="absolute top-0 right-8 whitespace-nowrap opacity-0 translate-x-4 group-hover/hotspot:opacity-100 group-hover/hotspot:translate-x-0 transition-all duration-500 pointer-events-none">
-<div class="bg-black/80 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-<p class="font-label-mono text-[10px] text-white tracking-widest uppercase">Punto de Estrés Reinforzado</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+<!-- Módulo 3 (Maestría Absoluta) -->
+<section class="relative bg-background overflow-hidden py-24 md:py-36 px-edge-margin" id="mastery">
+    <div class="relative z-10 max-w-[90rem] mx-auto w-full flex flex-col gap-16">
+        <!-- Section Header -->
+        <div class="max-w-3xl text-left reveal-on-scroll">
+            <span class="font-label-mono text-[11px] text-secondary tracking-[0.25em] uppercase block mb-2">FILOSOFÍA DE DESARROLLO</span>
+            <h2 class="font-display-lg text-[32px] md:text-[56px] text-white tracking-tighter uppercase font-bold leading-tight">
+                MAESTRÍA CONCEPTUAL
+            </h2>
+            <p class="font-body-lg text-[16px] md:text-[18px] text-on-surface-variant max-w-2xl mt-4 leading-relaxed">
+                La Venzo Amphion no se construyó simplemente sumando piezas; se concibió como un organismo unificado. Nos enfocamos en tres pilares de pilotaje que transforman la física del trail en sensaciones puras de control.
+            </p>
+        </div>
+
+        <!-- Pillars Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
+            <!-- Pillar 1: Geometría Adaptativa & Dirección Lanzada (Descensos) -->
+            <div class="relative group overflow-hidden rounded-2xl p-8 bg-white/[0.02] backdrop-blur-xl border border-white/10 flex flex-col justify-between min-h-[460px] transition-all duration-500 hover:border-secondary/30 hover:shadow-[0_12px_40px_rgba(254,107,0,0.08)] reveal-on-scroll">
+                <!-- SVG Illustration (Slack Headtube Geometry) -->
+                <div class="w-full h-40 flex items-center justify-center mb-6 overflow-hidden rounded-xl bg-black/20 border border-white/5 relative">
+                    <svg class="w-full h-full p-4 text-white/20 transition-transform duration-700 ease-out group-hover:scale-105" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ground reference -->
+                        <line x1="20" y1="80" x2="180" y2="80" stroke="currentColor" stroke-dasharray="4 4" stroke-width="0.75" />
+                        <!-- Vertical reference -->
+                        <line x1="100" y1="20" x2="100" y2="80" stroke="currentColor" stroke-dasharray="2 2" stroke-width="0.5" opacity="0.4" />
+                        <!-- Head angle line (68.5°) -->
+                        <line x1="100" y1="80" x2="135" y2="20" stroke="#fe6b00" stroke-width="2" />
+                        <path d="M100 50 A 30 30 0 0 1 113.5 56.5" stroke="#fe6b00" stroke-width="1.5" />
+                        <text x="120" y="46" fill="#fe6b00" class="font-label-mono text-[10px]" font-size="10">68.5°</text>
+                        <!-- Stylized steering tube overlay -->
+                        <rect x="110" y="25" width="8" height="30" transform="rotate(-30 110 25)" stroke="currentColor" stroke-width="1" fill="#1b110e" />
+                    </svg>
+                </div>
+                
+                <!-- Card Header -->
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-secondary group-hover:bg-secondary/10 group-hover:border-secondary/20 transition-all duration-300">
+                        <span class="material-symbols-outlined text-[20px]">route</span>
+                    </div>
+                    <h3 class="font-headline-md text-[20px] text-white uppercase font-bold tracking-wide">Geometría Adaptativa</h3>
+                </div>
+
+                <!-- Bloque Crítica -->
+                <blockquote class="font-serif italic text-neutral-400 text-[14px] leading-relaxed mb-4 border-l-2 border-neutral-700 pl-4">
+                    "A alta velocidad en bajadas o curvas cerradas, la dirección se siente nerviosa e inestable."
+                </blockquote>
+
+                <!-- Solution Description -->
+                <div class="mt-auto">
+                    <h4 class="font-label-mono text-[11px] text-white tracking-widest uppercase mb-1">GEOMETRÍA DE DIRECCIÓN LANZADA</h4>
+                    <p class="font-body-lg text-[13px] text-on-surface-variant leading-relaxed">
+                        Ángulo de ataque configurado a <span class="text-secondary-container font-bold">68.5°</span> junto a un cockpit integrado. Mayor distancia entre ejes que otorga un control absoluto y aplomo implacable en relieves verticales.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pillar 2: Absorción Orgánica & Monocasco de Carbono -->
+            <div class="relative group overflow-hidden rounded-2xl p-8 bg-white/[0.02] backdrop-blur-xl border border-white/10 flex flex-col justify-between min-h-[460px] transition-all duration-500 hover:border-secondary/30 hover:shadow-[0_12px_40px_rgba(254,107,0,0.08)] reveal-on-scroll">
+                <!-- SVG Illustration (Carbon UD Dampening Grid) -->
+                <div class="w-full h-40 flex items-center justify-center mb-6 overflow-hidden rounded-xl bg-black/20 border border-white/5 relative">
+                    <svg class="w-full h-full p-4 text-white/20 transition-transform duration-700 ease-out group-hover:scale-105" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Layered carbon fibers -->
+                        <line x1="20" y1="20" x2="180" y2="20" stroke="currentColor" stroke-width="0.5" />
+                        <line x1="20" y1="35" x2="180" y2="35" stroke="currentColor" stroke-dasharray="4 2" stroke-width="0.5" />
+                        <line x1="20" y1="50" x2="180" y2="50" stroke="#fe6b00" stroke-width="2" />
+                        <line x1="20" y1="65" x2="180" y2="65" stroke="currentColor" stroke-dasharray="2 2" stroke-width="0.5" />
+                        <line x1="20" y1="80" x2="180" y2="80" stroke="currentColor" stroke-width="0.5" />
+                        <!-- Interweaving diagonals denoting strength matrix -->
+                        <path d="M40 10 L80 90" stroke="currentColor" stroke-width="0.75" opacity="0.3" />
+                        <path d="M160 10 L120 90" stroke="currentColor" stroke-width="0.75" opacity="0.3" />
+                    </svg>
+                </div>
+                
+                <!-- Card Header -->
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-secondary group-hover:bg-secondary/10 group-hover:border-secondary/20 transition-all duration-300">
+                        <span class="material-symbols-outlined text-[20px]">waves</span>
+                    </div>
+                    <h3 class="font-headline-md text-[20px] text-white uppercase font-bold tracking-wide">Absorción Orgánica</h3>
+                </div>
+
+                <!-- Bloque Crítica -->
+                <blockquote class="font-serif italic text-neutral-400 text-[14px] leading-relaxed mb-4 border-l-2 border-neutral-700 pl-4">
+                    "Las bicicletas de carbono tan livianas se sienten frágiles; da miedo que el cuadro se fisure ante un golpe."
+                </blockquote>
+
+                <!-- Solution Description -->
+                <div class="mt-auto">
+                    <h4 class="font-label-mono text-[11px] text-white tracking-widest uppercase mb-1">MONOCASCO DE CARBONO UD</h4>
+                    <p class="font-body-lg text-[13px] text-on-surface-variant leading-relaxed">
+                        Disposición unidireccional de filamentos de carbono. Máxima resistencia al impacto en zonas críticas sin añadir peso muerto: un chasis blindado de solo <span class="text-secondary-container font-bold">890g</span>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pillar 3: Eficiencia de Pedaleo & Caja Pedalera (Subidas) -->
+            <div class="relative group overflow-hidden rounded-2xl p-8 bg-white/[0.02] backdrop-blur-xl border border-white/10 flex flex-col justify-between min-h-[460px] transition-all duration-500 hover:border-secondary/30 hover:shadow-[0_12px_40px_rgba(254,107,0,0.08)] reveal-on-scroll">
+                <!-- SVG Illustration (Pedalier Power Vector) -->
+                <div class="w-full h-40 flex items-center justify-center mb-6 overflow-hidden rounded-xl bg-black/20 border border-white/5 relative">
+                    <svg class="w-full h-full p-4 text-white/20 transition-transform duration-700 ease-out group-hover:scale-105" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Outer circle -->
+                        <circle cx="100" cy="50" r="35" stroke="currentColor" stroke-dasharray="2 2" stroke-width="0.5" opacity="0.5" />
+                        <!-- Bottom bracket shell -->
+                        <circle cx="100" cy="50" r="14" stroke="currentColor" stroke-width="1" />
+                        <circle cx="100" cy="50" r="7" fill="#1b110e" stroke="#fe6b00" stroke-width="1.5" />
+                        <!-- Frame tube connections -->
+                        <line x1="100" y1="36" x2="100" y2="12" stroke="currentColor" stroke-width="1.5" />
+                        <line x1="112" y1="57" x2="150" y2="70" stroke="currentColor" stroke-width="1.5" />
+                        <line x1="88" y1="43" x2="50" y2="22" stroke="currentColor" stroke-width="1.5" />
+                        <!-- Torque arrows showing force transfer -->
+                        <path d="M100 50 L100 20 M93 28 L100 20 L107 28" stroke="#fe6b00" stroke-width="2" />
+                        <!-- Rotation arc -->
+                        <path d="M78 50 A 22 22 0 0 1 100 28" stroke="#fe6b00" stroke-width="1.5" stroke-dasharray="2 2" />
+                    </svg>
+                </div>
+                
+                <!-- Card Header -->
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-secondary group-hover:bg-secondary/10 group-hover:border-secondary/20 transition-all duration-300">
+                        <span class="material-symbols-outlined text-[20px]">speed</span>
+                    </div>
+                    <h3 class="font-headline-md text-[20px] text-white uppercase font-bold tracking-wide">Eficiencia de Pedaleo</h3>
+                </div>
+
+                <!-- Bloque Crítica -->
+                <blockquote class="font-serif italic text-neutral-400 text-[14px] leading-relaxed mb-4 border-l-2 border-neutral-700 pl-4">
+                    "En pendientes muy inclinadas siento que la bicicleta flexiona abajo y pierdo energía en cada pedalada."
+                </blockquote>
+
+                <!-- Solution Description -->
+                <div class="mt-auto">
+                    <h4 class="font-label-mono text-[11px] text-white tracking-widest uppercase mb-1">CAJA PEDALERA SOBREDIMENSIONADA</h4>
+                    <p class="font-body-lg text-[13px] text-on-surface-variant leading-relaxed">
+                        Refuerzo estructural en los nodos de torsión críticos. El 100% de la transferencia de energía se traslada directamente a la rueda trasera, anulando la flexión del chasis.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-<!-- Módulo 4 (Component Carousel) -->
+
+<!-- Módulo 4 (Ingeniería Desfragmentada) -->
+<section id="specs-interactive" class="relative min-h-screen bg-surface flex flex-col justify-center py-24 md:py-36 px-edge-margin overflow-hidden">
+    <!-- Encabezado del Módulo -->
+    <div class="relative z-20 max-w-[88rem] mx-auto w-full text-left mt-0 mb-8 reveal-on-scroll">
+        <span class="font-label-mono text-[11px] text-secondary tracking-[0.25em] uppercase block mb-2">ANATOMÍA DE PRECISIÓN</span>
+        <h2 class="font-display-lg text-[32px] md:text-[48px] text-white tracking-tighter uppercase font-bold mb-4">INGENIERÍA DESFRAGMENTADA</h2>
+    </div>
+
+    <!-- Contenedor de la Bicicleta Centrado y a Escala -->
+    <div class="relative w-full max-w-[88rem] aspect-[16/9] mx-auto flex items-center justify-center z-10 reveal-on-scroll">
+        <div class="relative w-full h-full flex items-center justify-center scale-110 md:scale-125">
+            <img alt="Venzo Amphion" class="w-full h-full object-contain" src="assets/bici_exploded.png"/>
+            
+            <!-- Contenedor de hotspots alineado con el aspect-square de la imagen contained -->
+            <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 aspect-square pointer-events-none">
+                <!-- 1. Cockpit (top: 30%, left: 64%) -->
+                <div class="absolute group/hotspot top-[30%] left-[64%] pointer-events-auto hotspot-item">
+                    <div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                    <div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
+                    <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-top">
+                        <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
+                            <p class="font-label-mono text-[10px] text-white tracking-widest uppercase">COCKPIT INTEGRADO CARBONO UD</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Cuadro / Tubo Superior (top: 39%, left: 49%) -->
+                <div class="absolute group/hotspot top-[39%] left-[49%] pointer-events-auto hotspot-item">
+                    <div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                    <div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
+                    <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-top">
+                        <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
+                            <p class="font-label-mono text-[10px] text-white tracking-widest uppercase">FIBRA DE CARBONO ORGÁNICA 890G</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Horquilla / Suspensión Delantera (top: 47%, left: 70%) -->
+                <div class="absolute group/hotspot top-[47%] left-[70%] pointer-events-auto hotspot-item">
+                    <div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                    <div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
+                    <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-right">
+                        <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
+                            <p class="font-label-mono text-[10px] text-white tracking-widest uppercase">SUSPENSIÓN AIRE CONTROL REMOTO</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Shifter / Sistema de Frenos (top: 57%, left: 73%) -->
+                <div class="absolute group/hotspot top-[57%] left-[73%] pointer-events-auto hotspot-item">
+                    <div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                    <div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
+                    <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-right">
+                        <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
+                            <p class="font-label-mono text-[10px] text-white tracking-widest uppercase">FRENOS HIDRÁULICOS SHIMANO</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Caja Pedalera / Bielas (top: 62%, left: 44%) -->
+                <div class="absolute group/hotspot top-[62%] left-[44%] pointer-events-auto hotspot-item">
+                    <div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                    <div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
+                    <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-bottom">
+                        <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
+                            <p class="font-label-mono text-[10px] text-white tracking-widest uppercase">TRANSMISIÓN SHIMANO ELECTRONIC</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Asiento / Sillín (top: 29%, left: 34%) -->
+                <div class="absolute group/hotspot top-[29%] left-[34%] pointer-events-auto hotspot-item">
+                    <div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                    <div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
+                    <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-top">
+                        <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
+                            <p class="font-label-mono text-[10px] text-white tracking-widest uppercase">SILLÍN ERGONÓMICO PRO TRAIL</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Maza / Cassette Trasero (top: 58%, left: 23.5%) -->
+                <div class="absolute group/hotspot top-[58%] left-[23.5%] pointer-events-auto hotspot-item">
+                    <div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                    <div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
+                    <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-left">
+                        <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
+                            <p class="font-label-mono text-[10px] text-white tracking-widest uppercase">CASSETTE ULTRA-LIGHT 12 VELOCIDADES</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Sistema de Ruedas / Neumáticos (top: 65%, left: 82%) -->
+                <div class="absolute group/hotspot top-[65%] left-[82%] pointer-events-auto hotspot-item">
+                    <div class="w-4 h-4 bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                    <div class="w-4 h-4 bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
+                    <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-right">
+                        <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
+                            <p class="font-label-mono text-[10px] text-white tracking-widest uppercase">NEUMÁTICOS TUBELESS COMPETICIÓN</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Módulo 5 (Ingeniería de Precisión) -->
 <section class="bg-white md:h-screen flex flex-col justify-center gap-10 py-12 md:py-16 overflow-hidden text-[#1e1411]" id="components">
 <div class="text-center mb-12 px-edge-margin reveal-on-scroll">
-    <h2 class="font-display-lg text-[32px] md:text-[48px] text-[#1e1411] tracking-tighter uppercase font-bold mb-1">INGENIERÍA DE PRECISIÓN</h2>
+    <h2 class="font-display-lg text-[32px] md:text-[48px] text-[#1e1411] tracking-tighter uppercase font-bold mb-1">TECNOLOGÍA DE PUNTA</h2>
     <p class="font-label-mono font-bold text-[13px] md:text-[16px] text-secondary-container tracking-widest uppercase">Cada detalle cuenta</p>
 </div>
 <div class="relative w-full h-[50vh] md:h-[55vh] flex items-center justify-center px-edge-margin gap-6 reveal-on-scroll">
 <div class="carousel-item inactive h-full rounded-2xl overflow-hidden relative" onclick="activateSlide(this)">
     <img class="w-full h-full object-cover" src="assets/cockpit.png"/>
-    <div class="absolute inset-0 bg-black/10"></div>
-    <div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-[#1e1411]/80 to-transparent text-white text-center transition-all duration-500" style="opacity: 0">
-        <h3 class="font-headline-md text-[24px] mb-2 uppercase">COCKPIT</h3>
-        <p class="font-label-mono text-label-mono opacity-80">Manubrio integrado de carbono UD para una rigidez máxima y guiado interno de cables.</p>
+    <div class="absolute inset-0 bg-black/25 transition-all duration-500 pointer-events-none"></div>
+    <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
+    <div class="absolute bottom-0 left-0 w-full p-8 text-white text-center transition-all duration-500 carousel-text-box z-20" style="opacity: 0">
+        <h3 class="font-headline-md text-[24px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">COCKPIT</h3>
+        <p class="font-body-lg text-[16px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Manubrio integrado de carbono UD para una rigidez máxima y guiado interno de cables.</p>
     </div>
 </div>
 <div class="carousel-item active h-full rounded-2xl overflow-hidden relative shadow-2xl" onclick="activateSlide(this)">
     <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvtamohyA7NqA-0UXCv4of-xnhzfO-VTC1Wdgjz4v6sicBYeesd2eH5vJcQ7VQ68YGEROpitNLbDDlup5pBlF7bVU_jecXy4iSmE7PMyYdIoP08whnAmzKVYdPCD_3rJ_HJmWfJP5jHb1a-1Eo-fd0U2Bvwq2R95RzBf64pd_TGVfZQRVSgBHzNqS7Xrq8MVzy5DDc2Tp1BSoRBIQX9cjGpE44mYZz5DV-aHHP46ToTZM4XJV8Hcy5MdlyRMSFAvJki1D2j12JK_g"/>
-    <div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-[#1e1411]/80 to-transparent text-white text-center transition-all duration-500">
-        <h3 class="font-headline-md text-[24px] mb-2 uppercase">DRIVETRAIN</h3>
-        <p class="font-label-mono text-label-mono opacity-80">Transmisión electrónica inalámbrica para cambios perfectos bajo carga.</p>
+    <div class="absolute inset-0 bg-black/15 transition-all duration-500 pointer-events-none"></div>
+    <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
+    <div class="absolute bottom-0 left-0 w-full p-8 text-white text-center transition-all duration-500 carousel-text-box z-20">
+        <h3 class="font-headline-md text-[24px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">DRIVETRAIN</h3>
+        <p class="font-body-lg text-[16px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Transmisión electrónica inalámbrica para cambios perfectos bajo carga.</p>
     </div>
 </div>
 <div class="carousel-item inactive h-full rounded-2xl overflow-hidden relative" onclick="activateSlide(this)">
     <img class="w-full h-full object-cover" src="assets/suspension.png"/>
-    <div class="absolute inset-0 bg-black/10"></div>
-    <div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-[#1e1411]/80 to-transparent text-white text-center transition-all duration-500" style="opacity: 0">
-        <h3 class="font-headline-md text-[24px] mb-2 uppercase">SUSPENSIÓN</h3>
-        <p class="font-label-mono text-label-mono opacity-80">Horquilla delantera con amortiguación optimizada y bloqueo remoto electrónico.</p>
+    <div class="absolute inset-0 bg-black/25 transition-all duration-500 pointer-events-none"></div>
+    <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
+    <div class="absolute bottom-0 left-0 w-full p-8 text-white text-center transition-all duration-500 carousel-text-box z-20" style="opacity: 0">
+        <h3 class="font-headline-md text-[24px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">SUSPENSIÓN</h3>
+        <p class="font-body-lg text-[16px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Horquilla delantera con amortiguación optimizada y bloqueo remoto electrónico.</p>
     </div>
 </div>
-</div>
-<div class="flex justify-center gap-3 mt-4">
-    <span class="carousel-dot w-2.5 h-2.5 rounded-full bg-[#1e1411]/20 transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(0)"></span>
-    <span class="carousel-dot w-2.5 h-2.5 rounded-full bg-secondary-container transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(1)"></span>
-    <span class="carousel-dot w-2.5 h-2.5 rounded-full bg-[#1e1411]/20 transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(2)"></span>
-</div>
 </section>
-<!-- Módulo 5 (Conversion) -->
+<!-- Módulo 5.5 (Customización) -->
+<section id="customizer" class="relative min-h-[90vh] bg-white flex flex-col justify-center py-24 px-edge-margin border-b border-[#1e1411]/10 overflow-hidden">
+    <div class="max-w-[90rem] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        
+        <!-- Contenedor Izquierdo: Textos e interactividad -->
+        <div class="lg:col-span-5 flex flex-col justify-center reveal-on-scroll">
+            <span class="font-label-mono text-[11px] text-secondary-container tracking-[0.25em] uppercase block mb-2">DISEÑO Y PERSONALIZACIÓN</span>
+            <h2 class="font-display-lg text-[32px] md:text-[48px] text-[#1e1411] tracking-tighter uppercase font-bold mb-6">ELIGE TU ASPECTO</h2>
+            <p class="font-body-lg text-[16px] md:text-[18px] text-[#1e1411]/80 mb-10 leading-relaxed">
+                Define el carácter de tu Venzo Amphion. Selecciona entre las firmas estéticas premium desarrolladas específicamente para mimetizarse con el entorno o destacar en el sendero.
+            </p>
+            
+            <!-- Swatches (Wide premium cards) -->
+            <div class="flex flex-col gap-4 max-w-md w-full">
+                <!-- Color 1 -->
+                <div class="customizer-swatch active group relative bg-[#f5eeea] border border-secondary-container shadow-md transition-all duration-300 rounded-xl p-4 flex items-center justify-between gap-4 cursor-pointer select-none" onclick="selectColor(0)">
+                    <div class="flex items-center gap-4">
+                        <!-- Dual dot color indicator -->
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#8A8D8F] to-[#1A1A1A] border border-black/10 flex items-center justify-center shrink-0"></div>
+                        <div class="flex flex-col">
+                            <span class="font-headline-md text-[16px] font-bold text-[#1e1411] tracking-wide uppercase transition-colors group-hover:text-secondary-container">GRIS CROMO</span>
+                            <span class="font-label-mono text-[11px] text-[#1e1411]/60">CHROME GREY / ED. ESP.</span>
+                        </div>
+                    </div>
+                    <span class="font-label-mono text-[11px] text-secondary-container">#8A8D8F</span>
+                </div>
+
+                <!-- Color 2 -->
+                <div class="customizer-swatch group relative bg-white/80 border border-[#1e1411]/10 hover:border-secondary-container/40 transition-all duration-300 rounded-xl p-4 flex items-center justify-between gap-4 cursor-pointer select-none" onclick="selectColor(1)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff007f] to-[#1A1A1A] border border-black/10 flex items-center justify-center shrink-0"></div>
+                        <div class="flex flex-col">
+                            <span class="font-headline-md text-[16px] font-bold text-[#1e1411] tracking-wide uppercase transition-colors group-hover:text-secondary-container">ROSA NEO</span>
+                            <span class="font-label-mono text-[11px] text-[#1e1411]/60">NEON PINK / DESTELLANTE</span>
+                        </div>
+                    </div>
+                    <span class="font-label-mono text-[11px] text-secondary-container">#FF007F</span>
+                </div>
+
+                <!-- Color 3 -->
+                <div class="customizer-swatch group relative bg-white/80 border border-[#1e1411]/10 hover:border-secondary-container/40 transition-all duration-300 rounded-xl p-4 flex items-center justify-between gap-4 cursor-pointer select-none" onclick="selectColor(2)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#39ff14] to-[#1A1A1A] border border-black/10 flex items-center justify-center shrink-0"></div>
+                        <div class="flex flex-col">
+                            <span class="font-headline-md text-[16px] font-bold text-[#1e1411] tracking-wide uppercase transition-colors group-hover:text-secondary-container">VERDE ELÉCTRICO</span>
+                            <span class="font-label-mono text-[11px] text-[#1e1411]/60">ELECTRIC LIME / RACING</span>
+                        </div>
+                    </div>
+                    <span class="font-label-mono text-[11px] text-secondary-container">#39FF14</span>
+                </div>
+
+                <!-- Color 4 -->
+                <div class="customizer-swatch group relative bg-white/80 border border-[#1e1411]/10 hover:border-secondary-container/40 transition-all duration-300 rounded-xl p-4 flex items-center justify-between gap-4 cursor-pointer select-none" onclick="selectColor(3)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#4A3126] to-[#1A1A1A] border border-black/10 flex items-center justify-center shrink-0"></div>
+                        <div class="flex flex-col">
+                            <span class="font-headline-md text-[16px] font-bold text-[#1e1411] tracking-wide uppercase transition-colors group-hover:text-secondary-container">MARRÓN TIERRA</span>
+                            <span class="font-label-mono text-[11px] text-[#1e1411]/60">EARTH BROWN / ORGÁNICO</span>
+                        </div>
+                    </div>
+                    <span class="font-label-mono text-[11px] text-secondary-container">#4A3126</span>
+                </div>
+
+            </div>
+
+            <!-- Technical details metadata box -->
+            <div class="mt-8 pt-6 border-t border-[#1e1411]/20 max-w-md w-full grid grid-cols-2 gap-4">
+                <div>
+                    <span class="font-label-mono text-[10px] text-[#1e1411]/60 uppercase block">CÓDIGO DE COLOR</span>
+                    <span id="custom-meta-code" class="font-label-mono text-[13px] text-[#1e1411] font-bold tracking-wider">#8A8D8F</span>
+                </div>
+                <div>
+                    <span class="font-label-mono text-[10px] text-[#1e1411]/60 uppercase block">ACABADO DEL CUADRO</span>
+                    <span id="custom-meta-finish" class="font-label-mono text-[13px] text-[#1e1411] font-bold tracking-wider">BRILLANTE ANODIZADO</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor Derecho: Imagen y fondo luminoso -->
+        <div class="lg:col-span-7 relative w-full aspect-[4/3] flex items-center justify-center reveal-on-scroll">
+            
+            <!-- Large Typography Watermark Background -->
+            <span class="absolute inset-0 flex items-center justify-center font-display-lg text-[130px] sm:text-[180px] md:text-[230px] lg:text-[180px] xl:text-[220px] text-[#1e1411]/[0.03] tracking-widest font-black pointer-events-none select-none">AMPHION</span>
+            
+            <!-- Color Ambient Glow Back Aura (Locked to Módulo 4 Light Brown #4a3126) -->
+            <div id="customizer-glow" class="absolute w-[60%] h-[60%] rounded-full blur-[100px] sm:blur-[120px] opacity-20 pointer-events-none transition-all duration-1000 bg-[#4a3126]"></div>
+
+            <!-- Image Stack (Preloaded PNGs for zero flicker, using transition opacity) -->
+            <div class="relative w-full h-full flex items-center justify-center">
+                <!-- Color 1 -->
+                <img id="custom-bike-0" class="customizer-bike absolute w-full h-auto max-h-[85%] object-contain opacity-100 transition-opacity duration-700 ease-in-out pointer-events-none select-none z-10" src="assets/color-1.png" alt="Venzo Amphion Gris Cromo"/>
+                <!-- Color 2 -->
+                <img id="custom-bike-1" class="customizer-bike absolute w-full h-auto max-h-[85%] object-contain opacity-0 transition-opacity duration-700 ease-in-out pointer-events-none select-none z-10" src="assets/color-2.png" alt="Venzo Amphion Rosa Neo"/>
+                <!-- Color 3 -->
+                <img id="custom-bike-2" class="customizer-bike absolute w-full h-auto max-h-[85%] object-contain opacity-0 transition-opacity duration-700 ease-in-out pointer-events-none select-none z-10" src="assets/color-3.png" alt="Venzo Amphion Verde Eléctrico"/>
+                <!-- Color 4 -->
+                <img id="custom-bike-3" class="customizer-bike absolute w-full h-auto max-h-[85%] object-contain opacity-0 transition-opacity duration-700 ease-in-out pointer-events-none select-none z-10 scale-[1.07]" src="assets/color-4.png" alt="Venzo Amphion Marrón Tierra"/>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+</section>
+<!-- Módulo 6 (Reserva Ya) -->
 <section class="relative h-[70vh] md:h-[80vh] md:max-h-[800px] flex items-center justify-center overflow-hidden text-center py-24 md:py-32 px-edge-margin" id="conversion">
     <!-- Background Image with Overlay -->
     <div class="absolute inset-0 z-0">
@@ -397,14 +786,14 @@
         items.forEach(item => {
             item.classList.remove('active', 'shadow-2xl');
             item.classList.add('inactive');
-            const overlay = item.querySelector('.bg-gradient-to-t');
+            const overlay = item.querySelector('.carousel-text-box');
             if(overlay) overlay.style.opacity = '0';
         });
 
         clickedElement.classList.remove('inactive');
         clickedElement.classList.add('active', 'shadow-2xl');
         
-        const activeOverlay = clickedElement.querySelector('.bg-gradient-to-t');
+        const activeOverlay = clickedElement.querySelector('.carousel-text-box');
         if(activeOverlay) activeOverlay.style.opacity = '1';
 
         // Update dots indicators
@@ -426,12 +815,70 @@
             activateSlide(items[index]);
         }
     }
-    
+
+    function selectColor(index) {
+        const swatches = document.querySelectorAll('.customizer-swatch');
+        const bikes = document.querySelectorAll('.customizer-bike');
+        const metaCode = document.getElementById('custom-meta-code');
+        const metaFinish = document.getElementById('custom-meta-finish');
+
+        const codes = ['#8A8D8F', '#FF007F', '#39FF14', '#4A3126'];
+        const finishes = ['BRILLANTE ANODIZADO', 'MATE SATINADO', 'MATE RACING', 'MATE ORGÁNICO'];
+
+        swatches.forEach((swatch, idx) => {
+            if (idx === index) {
+                swatch.classList.add('active', 'border-secondary-container', 'bg-[#f5eeea]', 'shadow-md');
+                swatch.classList.remove('border-[#1e1411]/10', 'bg-white/80');
+            } else {
+                swatch.classList.remove('active', 'border-secondary-container', 'bg-[#f5eeea]', 'shadow-md');
+                swatch.classList.add('border-[#1e1411]/10', 'bg-white/80');
+            }
+        });
+
+        bikes.forEach((bike, idx) => {
+            if (idx === index) {
+                bike.classList.remove('opacity-0');
+                bike.classList.add('opacity-100');
+            } else {
+                bike.classList.remove('opacity-100');
+                bike.classList.add('opacity-0');
+            }
+        });
+
+        if (metaCode) {
+            metaCode.textContent = codes[index];
+        }
+        if (metaFinish) {
+            metaFinish.textContent = finishes[index];
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+         // Sticky Navbar Scroll Effect
+         const navbar = document.getElementById('navbar');
+         const navbarContainer = document.getElementById('navbar-container');
+         
+         const handleScroll = () => {
+             if (window.scrollY > 20) {
+                 navbar.classList.remove('bg-transparent', 'border-transparent');
+                 navbar.classList.add('bg-surface/90', 'backdrop-blur-md', 'border-white/5', 'shadow-md');
+                 navbarContainer.classList.remove('py-4', 'md:py-6');
+                 navbarContainer.classList.add('py-2.5', 'md:py-3');
+             } else {
+                 navbar.classList.remove('bg-surface/90', 'backdrop-blur-md', 'border-white/5', 'shadow-md');
+                 navbar.classList.add('bg-transparent', 'border-transparent');
+                 navbarContainer.classList.remove('py-2.5', 'md:py-3');
+                 navbarContainer.classList.add('py-4', 'md:py-6');
+             }
+         };
+         
+         window.addEventListener('scroll', handleScroll);
+         handleScroll();
+
          const items = document.querySelectorAll('.carousel-item');
          items.forEach(item => {
              if(item.classList.contains('inactive')) {
-                 const overlay = item.querySelector('.bg-gradient-to-t');
+                 const overlay = item.querySelector('.carousel-text-box');
                  if(overlay) overlay.style.opacity = '0';
              }
          });
@@ -455,57 +902,98 @@
          const revealElements = document.querySelectorAll('.reveal-on-scroll');
          revealElements.forEach(el => revealObserver.observe(el));
 
-         // Module 3 Specs Grid Animations
-         const animateSpecs = () => {
-             // Animate progress bars
-             const bars = document.querySelectorAll('.spec-bar');
-             bars.forEach(bar => {
-                 const targetWidth = bar.getAttribute('data-target-width');
-                 bar.style.width = targetWidth;
-             });
+         // Initialize Lenis Smooth Scroll
+         const lenis = new Lenis({
+             duration: 1.2,
+             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+             smoothWheel: true,
+             touchMultiplier: 2,
+             infinite: false,
+         });
 
-             // Animate numbers count-up
-             const numbers = document.querySelectorAll('.spec-number');
-             numbers.forEach(num => {
-                 const target = parseInt(num.getAttribute('data-target-value'));
-                 const prefix = num.getAttribute('data-prefix') || '';
-                 const duration = 1500; // ms
-                 const startTime = performance.now();
+         function raf(time) {
+             lenis.raf(time);
+             requestAnimationFrame(raf);
+         }
+         requestAnimationFrame(raf);
 
-                 const step = (currentTime) => {
-                     const elapsed = currentTime - startTime;
-                     const progress = Math.min(elapsed / duration, 1);
-                     
-                     // Ease out quad
-                     const easeProgress = progress * (2 - progress);
-                     const currentValue = Math.floor(easeProgress * target);
-
-                     num.textContent = prefix + currentValue;
-
-                     if (progress < 1) {
-                         requestAnimationFrame(step);
-                     } else {
-                         num.textContent = prefix + target;
-                     }
-                 };
-
-                 requestAnimationFrame(step);
-             });
-         };
-
-         const specsObserver = new IntersectionObserver((entries, observer) => {
-             entries.forEach(entry => {
-                 if (entry.isIntersecting) {
-                     animateSpecs();
-                     observer.unobserve(entry.target);
+         // Connect Lenis to anchor link clicks
+         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+             anchor.addEventListener('click', function (e) {
+                 e.preventDefault();
+                 const targetId = this.getAttribute('href');
+                 if (targetId === '#') return;
+                 const targetElement = document.querySelector(targetId);
+                 if (targetElement) {
+                     lenis.scrollTo(targetElement, {
+                         offset: 0,
+                         duration: 1.4,
+                         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+                     });
                  }
              });
-         }, { threshold: 0.2 });
+         });
 
-         const specsSection = document.getElementById('mastery');
-         if (specsSection) {
-             specsObserver.observe(specsSection);
-         }
+         // Navigation Active State Highlight via IntersectionObserver
+         const sections = document.querySelectorAll('main > section');
+         const navLinks = document.querySelectorAll('.nav-link');
+
+         const activeObserverOptions = {
+             root: null,
+             threshold: 0.2, // Adjust threshold to trigger nicely on scroll transitions
+             rootMargin: "-20% 0px -30% 0px"
+         };
+
+         const activeObserver = new IntersectionObserver((entries) => {
+             entries.forEach(entry => {
+                 if (entry.isIntersecting) {
+                     const activeId = entry.target.getAttribute('id');
+                     
+                     navLinks.forEach(link => {
+                         const href = link.getAttribute('href');
+                         const line = link.querySelector('span');
+                         if (href === `#${activeId}`) {
+                             link.classList.remove('text-on-surface/80');
+                             link.classList.add('text-secondary');
+                             if (line) {
+                                 line.classList.remove('scale-x-0');
+                                 line.classList.add('scale-x-100');
+                             }
+                         } else {
+                             link.classList.remove('text-secondary');
+                             link.classList.add('text-on-surface/80');
+                             if (line) {
+                                 line.classList.remove('scale-x-100');
+                                 line.classList.add('scale-x-0');
+                             }
+                         }
+                     });
+                 }
+             });
+         }, activeObserverOptions);
+
+         sections.forEach(section => activeObserver.observe(section));
+
+         // Hotspots Interactive Click Behavior
+         const hotspots = document.querySelectorAll('.hotspot-item');
+         hotspots.forEach(hotspot => {
+             hotspot.addEventListener('click', (e) => {
+                 e.stopPropagation();
+                 const isActive = hotspot.classList.contains('hotspot-active');
+                 
+                 // Toggle current hotspot
+                 if (isActive) {
+                     hotspot.classList.remove('hotspot-active');
+                 } else {
+                     hotspot.classList.add('hotspot-active');
+                 }
+             });
+         });
+
+         // Close any open hotspot tooltip when clicking anywhere outside
+         document.addEventListener('click', () => {
+             hotspots.forEach(h => h.classList.remove('hotspot-active'));
+         });
     });
 </script>
 </body></html>
