@@ -211,51 +211,82 @@
         }
 
         /* Interactive Hotspots styling */
+        .hotspot-dot {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff9d5e 0%, #fe6b00 65%, #441700 100%);
+            border: 2.5px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(254, 107, 0, 0.75), 0 0 4px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .hotspot-dot:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 22px rgba(254, 107, 0, 0.95), 0 0 6px rgba(0, 0, 0, 0.7);
+        }
+
         .hotspot-item.hotspot-active .hotspot-tooltip {
             opacity: 1 !important;
             pointer-events: auto !important;
         }
 
         .hotspot-item.hotspot-active .hotspot-dot {
-            background-color: #fe6b00 !important;
-            transform: scale(1.2);
+            background: radial-gradient(circle, #ffffff 0%, #ff8030 60%, #fe6b00 100%) !important;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 1), 0 0 15px rgba(254, 107, 0, 0.8) !important;
+            border-color: #fe6b00 !important;
+            transform: scale(1.25);
         }
 
-        /* Tooltip directional positioning and transitions */
-        .tooltip-top {
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translate(-50%, 0.5rem);
-        }
-        .hotspot-item.hotspot-active .tooltip-top {
-            transform: translate(-50%, 0) !important;
-        }
-
-        .tooltip-bottom {
-            top: 1.5rem;
-            left: 50%;
-            transform: translate(-50%, -0.5rem);
-        }
-        .hotspot-item.hotspot-active .tooltip-bottom {
-            transform: translate(-50%, 0) !important;
+        /* Tooltip animation and transitions */
+        .hotspot-tooltip {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95) translateY(5px);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 30;
         }
 
-        .tooltip-left {
-            right: 1.5rem;
-            top: 50%;
-            transform: translate(0.5rem, -50%);
-        }
-        .hotspot-item.hotspot-active .tooltip-left {
-            transform: translate(0, -50%) !important;
+        .hotspot-item.hotspot-active .hotspot-tooltip {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: scale(1) translateY(0) !important;
         }
 
-        .tooltip-right {
-            left: 1.5rem;
-            top: 50%;
-            transform: translate(-0.5rem, -50%);
+        /* Callout lines connecting hotspot dots to tooltips */
+        .tooltip-line {
+            position: absolute;
+            height: 1px;
+            pointer-events: none;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 5;
         }
-        .hotspot-item.hotspot-active .tooltip-right {
-            transform: translate(0, -50%) !important;
+
+        /* Left Line: Horizontal from dot extending to the left */
+        .tooltip-left-line {
+            right: 10px;
+            top: 10px;
+            background: linear-gradient(to left, rgba(254, 107, 0, 0.95), rgba(255, 255, 255, 0.25));
+            transform-origin: right;
+            transform: translateY(-50%) scaleX(0);
+        }
+        .hotspot-item.hotspot-active .tooltip-left-line {
+            transform: translateY(-50%) scaleX(1) !important;
+        }
+
+        /* Right Line: Horizontal from dot extending to the right */
+        .tooltip-right-line {
+            left: 10px;
+            top: 10px;
+            background: linear-gradient(to right, rgba(254, 107, 0, 0.95), rgba(255, 255, 255, 0.25));
+            transform-origin: left;
+            transform: translateY(-50%) scaleX(0);
+        }
+        .hotspot-item.hotspot-active .tooltip-right-line {
+            transform: translateY(-50%) scaleX(1) !important;
         }
 
         /* Module 2: Interactive Staggered Grid styling */
@@ -296,6 +327,10 @@
                 flex: 1.35;
                 transform: translateY(-20px);
             }
+        }
+        /* Thin terrains section icons (Module 1.5) */
+        #terrains .material-symbols-outlined {
+            font-variation-settings: 'wght' 200;
         }
 
         /* Module 2: Image position adjustments (visible in static state) */
@@ -394,7 +429,159 @@
                 display: none !important;
             }
         }
-    </style>
+
+        /* Customizer Spotlight and ground reflection styling */
+        .customizer-spotlight-cone {
+            position: absolute;
+            top: -15%;
+            left: 0;
+            right: 0;
+            height: 135%;
+            background: 
+                radial-gradient(circle at 50% 10%, rgba(254, 107, 0, 0.52) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 90%, rgba(254, 107, 0, 0.25) 0%, transparent 65%);
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 1;
+        }
+
+        .customizer-spotlight-cone::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 60px;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.85) 0%, rgba(254, 107, 0, 0.45) 60%, transparent 100%);
+            filter: blur(10px);
+            pointer-events: none;
+        }
+    /* Mobile General, Modalidades, Carousel, and Customizer Overrides */
+    @media (max-width: 1023px) {
+        /* Módulo 2 (Modalidades) Mobile layout */
+        .performance-card {
+            flex-direction: column !important;
+            min-height: auto !important;
+            padding: 0 !important;
+            background: rgba(255, 255, 255, 0.02) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+        .performance-card .absolute.inset-0.z-0 {
+            position: relative !important;
+            width: 100% !important;
+            aspect-ratio: 16/9 !important;
+            height: auto !important;
+        }
+        .performance-card img.amateur-img, 
+        .performance-card img.pro-img {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .performance-card .relative.z-10 {
+            position: relative !important;
+            padding: 1.5rem !important;
+            width: 100% !important;
+            background: #1b110e !important;
+            margin-top: 0 !important;
+        }
+        .performance-card-text {
+            max-height: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+        .badge-label {
+            margin-bottom: 0.75rem !important;
+        }
+
+        /* Módulo 5.5 (Customización / Aspectos) Mobile layout */
+        #customizer {
+            padding-top: 0 !important;
+            min-height: auto !important;
+        }
+        #customizer .absolute.inset-0.z-0 {
+            position: absolute !important;
+            height: auto !important;
+            aspect-ratio: 16/9 !important;
+            bottom: auto !important;
+        }
+        .customizer-bg {
+            position: absolute !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            top: 0 !important;
+            bottom: auto !important;
+        }
+        #customizer .bg-gradient-to-r {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        /* Módulo 5 (Tecnología de Punta) Carousel Mobile layout */
+        .carousel-item { 
+            width: 100% !important; 
+        }
+        .carousel-item.inactive { 
+            display: none !important; 
+        }
+        .carousel-item.active { 
+            width: 100% !important; 
+        }
+        
+        #components .carousel-item.active {
+            display: flex !important;
+            flex-direction: column !important;
+            height: auto !important;
+            background: #281d1a !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding: 0 !important;
+        }
+        #components .carousel-item img {
+            position: relative !important;
+            width: 100% !important;
+            aspect-ratio: 16/9 !important;
+            height: auto !important;
+            object-fit: cover !important;
+        }
+        #components .carousel-text-box {
+            position: relative !important;
+            opacity: 1 !important;
+            padding: 1.5rem !important;
+            transform: none !important;
+            background: transparent !important;
+        }
+        #components .carousel-text-box h3 {
+            color: #ffffff !important;
+        }
+        #components .carousel-text-box p {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        #components .relative.w-full.h-\[45vh\] {
+            height: auto !important;
+        }
+
+        .tooltip-line { 
+            display: none !important; 
+        }
+        .hotspot-tooltip { 
+            opacity: 1 !important; 
+            pointer-events: auto !important; 
+            transform: none !important; 
+        }
+        .carousel-dot { 
+            margin: 0 2px; 
+        }
+        .performance-grid { 
+            gap: 1.5rem !important; 
+        }
+    }
+</style>
 </head>
 <body class="antialiased selection:bg-secondary-container selection:text-on-secondary-container" spellcheck="false">
 <!-- TopNavBar -->
@@ -424,8 +611,8 @@
                 ASPECTOS
                 <span class="absolute bottom-0 left-0 w-full h-[2px] bg-secondary scale-x-0 origin-left transition-transform duration-300"></span>
             </a>
-            <a class="nav-link relative pb-1 font-label-mono text-label-mono uppercase transition-all duration-300 text-on-surface/80 font-bold hover:text-secondary" href="#conversion">
-                RESERVA YA
+            <a class="nav-link relative pb-1 font-label-mono text-label-mono uppercase transition-all duration-300 text-on-surface/80 font-bold hover:text-secondary" href="#reviews">
+                RESEÑAS
                 <span class="absolute bottom-0 left-0 w-full h-[2px] bg-secondary scale-x-0 origin-left transition-transform duration-300"></span>
             </a>
         </div>
@@ -463,7 +650,7 @@
         
         <!-- CTA / Footer -->
         <div class="flex flex-col gap-6">
-            <a id="mobile-menu-reserve" class="w-full h-12 flex items-center justify-center bg-white text-[#1b110e] rounded-xl font-label-mono text-[12px] tracking-widest uppercase font-bold transition-all duration-300 hover:bg-white/90" href="#conversion">RESERVA YA</a>
+            <a id="mobile-menu-reserve" class="w-full h-12 flex items-center justify-center bg-white text-[#1b110e] rounded-xl font-label-mono text-[12px] tracking-widest uppercase font-bold transition-all duration-300 hover:bg-white/90" href="#reviews">RESEÑAS</a>
             <div class="font-label-mono text-[9px] tracking-wider opacity-40 text-center">
                 © 2024 VENZO VANGUARD
             </div>
@@ -492,8 +679,8 @@
     <a href="#performance" class="w-full sm:w-48 h-14 flex items-center justify-center bg-white/5 backdrop-blur-sm hover:bg-white/10 text-white rounded-xl font-label-mono text-[13px] tracking-widest uppercase transition-all duration-300 border border-white/10 font-bold select-none cursor-pointer">
         DESCUBRE MÁS
     </a>
-    <a href="#conversion" class="w-full sm:w-52 h-14 flex items-center justify-center bg-white hover:bg-white/90 text-[#1b110e] rounded-xl font-label-mono text-[13px] tracking-widest uppercase transition-all duration-300 font-bold select-none cursor-pointer group">
-        RESERVAR
+    <a href="#reviews" class="w-full sm:w-52 h-14 flex items-center justify-center bg-white hover:bg-white/90 text-[#1b110e] rounded-xl font-label-mono text-[13px] tracking-widest uppercase transition-all duration-300 font-bold select-none cursor-pointer group">
+        RESEÑAS
         <svg class="w-4 h-4 ml-3 transition-transform duration-300 group-hover:translate-x-1.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
         </svg>
@@ -730,104 +917,127 @@
     <div class="max-w-[90rem] mx-auto w-full lg:aspect-[16/9] lg:max-h-[70vh] flex flex-col justify-center relative">
         <!-- Encabezado del Módulo -->
         <div class="relative z-20 w-full text-center mt-0 mb-6 reveal-on-scroll">
-            <h2 class="font-display-lg text-[32px] md:text-[56px] text-white tracking-tighter uppercase font-bold mb-4">INGENIERÍA DESFRAGMENTADA</h2>
+            <h2 class="font-display-lg text-[32px] md:text-[56px] text-white tracking-tighter uppercase font-bold mb-2">INGENIERÍA DESFRAGMENTADA</h2>
+            <p class="font-body-lg text-[16px] md:text-[18px] text-white/70 max-w-xl mx-auto leading-relaxed">
+                Componentes de precisión para el máximo rendimiento.
+            </p>
         </div>
 
         <!-- Contenedor de la Bicicleta Centrado y a Escala -->
         <div class="relative w-full lg:h-[82%] aspect-[16/9] mx-auto flex items-center justify-center z-10 reveal-on-scroll">
             <div class="relative w-full h-full flex items-center justify-center scale-100 md:scale-130 lg:scale-[1.42]">
-                <img alt="Venzo Amphion" class="w-full h-full object-contain" src="assets/bici_exploded.png"/>
+                
+                <!-- Imagen principal de la bicicleta -->
+                <img src="assets/bici_exploded_temp.png" alt="Venzo Amphion componentes" class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none z-0" />
                 
                 <!-- Contenedor de hotspots alineado con el aspect-square de la imagen contained -->
                 <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 aspect-square pointer-events-none">
                     <!-- 1. Cockpit (top: 30%, left: 64%) -->
                     <div class="absolute group/hotspot top-[30%] left-[64%] pointer-events-auto hotspot-item">
-                        <div class="w-[18px] h-[18px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-                        <div class="w-[18px] h-[18px] bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
-                        <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-top">
-                            <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-                                <p class="font-label-mono text-[10px] md:text-[11px] text-white tracking-widest uppercase">COCKPIT INTEGRADO CARBONO UD</p>
+                        <div class="w-[20px] h-[20px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                        <div class="hotspot-dot"></div>
+                        <div class="tooltip-line tooltip-right-line w-[15rem]"></div>
+                        <div class="absolute opacity-0 pointer-events-none hotspot-tooltip left-[15rem] top-[-5rem] w-[250px] whitespace-normal">
+                            <div class="bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 rounded-2xl p-5 text-left">
+                                <h3 class="font-headline-md text-[13px] text-white font-bold tracking-wider uppercase mb-2">COCKPIT INTEGRADO</h3>
+                                <p class="font-body-lg text-[11px] text-white/70 leading-relaxed">Manubrio y avance integrados en fibra de carbono UD, diseñados para optimizar la aerodinámica y la rigidez de la dirección.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- 2. Cuadro / Tubo Superior (top: 39%, left: 49%) -->
                     <div class="absolute group/hotspot top-[39%] left-[49%] pointer-events-auto hotspot-item">
-                        <div class="w-[18px] h-[18px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-                        <div class="w-[18px] h-[18px] bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
-                        <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-top">
-                            <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-                                <p class="font-label-mono text-[10px] md:text-[11px] text-white tracking-widest uppercase">FIBRA DE CARBONO ORGÁNICA 890G</p>
+                        <div class="w-[20px] h-[20px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                        <div class="hotspot-dot"></div>
+                        <div class="tooltip-line tooltip-left-line w-[18rem]"></div>
+                        <div class="absolute opacity-0 pointer-events-none hotspot-tooltip right-[18rem] top-[-5rem] w-[250px] whitespace-normal">
+                            <div class="bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 rounded-2xl p-5 text-left">
+                                <h3 class="font-headline-md text-[13px] text-white font-bold tracking-wider uppercase mb-2">FIBRA DE CARBONO</h3>
+                                <p class="font-body-lg text-[11px] text-white/70 leading-relaxed">Fibra de carbono de alto módulo con un peso de solo 890g, ofreciendo una rigidez torsional incomparable y absorción orgánica.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- 3. Horquilla / Suspensión Delantera (top: 47%, left: 70%) -->
                     <div class="absolute group/hotspot top-[47%] left-[70%] pointer-events-auto hotspot-item">
-                        <div class="w-[18px] h-[18px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-                        <div class="w-[18px] h-[18px] bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
-                        <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-right">
-                            <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-                                <p class="font-label-mono text-[10px] md:text-[11px] text-white tracking-widest uppercase">SUSPENSIÓN AIRE CONTROL REMOTO</p>
+                        <div class="w-[20px] h-[20px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                        <div class="hotspot-dot"></div>
+                        <div class="tooltip-line tooltip-right-line w-[12rem]"></div>
+                        <div class="absolute opacity-0 pointer-events-none hotspot-tooltip left-[12rem] top-[-5rem] w-[250px] whitespace-normal">
+                            <div class="bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 rounded-2xl p-5 text-left">
+                                <h3 class="font-headline-md text-[13px] text-white font-bold tracking-wider uppercase mb-2">SUSPENSIÓN HORQUILLA</h3>
+                                <p class="font-body-lg text-[11px] text-white/70 leading-relaxed">Horquilla de aire ajustable con 120mm de recorrido, optimizada para absorber impactos y proporcionar control en terrenos técnicos.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- 4. Shifter / Sistema de Frenos (top: 57%, left: 73%) -->
                     <div class="absolute group/hotspot top-[57%] left-[73%] pointer-events-auto hotspot-item">
-                        <div class="w-[18px] h-[18px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-                        <div class="w-[18px] h-[18px] bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
-                        <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-right">
-                            <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-                                <p class="font-label-mono text-[10px] md:text-[11px] text-white tracking-widest uppercase">FRENOS HIDRÁULICOS SHIMANO</p>
+                        <div class="w-[20px] h-[20px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                        <div class="hotspot-dot"></div>
+                        <div class="tooltip-line tooltip-right-line w-[12rem]"></div>
+                        <div class="absolute opacity-0 pointer-events-none hotspot-tooltip left-[12rem] top-[-5rem] w-[250px] whitespace-normal">
+                            <div class="bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 rounded-2xl p-5 text-left">
+                                <h3 class="font-headline-md text-[13px] text-white font-bold tracking-wider uppercase mb-2">FRENOS DE DISCO</h3>
+                                <p class="font-body-lg text-[11px] text-white/70 leading-relaxed">Frenos de disco hidráulicos Shimano con rotores de alta disipación térmica, garantizando un frenado potente y modulable.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- 5. Caja Pedalera / Bielas (top: 62%, left: 44%) -->
                     <div class="absolute group/hotspot top-[62%] left-[44%] pointer-events-auto hotspot-item">
-                        <div class="w-[18px] h-[18px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-                        <div class="w-[18px] h-[18px] bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
-                        <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-bottom">
-                            <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-                                <p class="font-label-mono text-[10px] md:text-[11px] text-white tracking-widest uppercase">TRANSMISIÓN SHIMANO ELECTRONIC</p>
+                        <div class="w-[20px] h-[20px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                        <div class="hotspot-dot"></div>
+                        <div class="tooltip-line tooltip-left-line w-[16rem]"></div>
+                        <div class="absolute opacity-0 pointer-events-none hotspot-tooltip right-[16rem] top-[-5rem] w-[250px] whitespace-normal">
+                            <div class="bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 rounded-2xl p-5 text-left">
+                                <h3 class="font-headline-md text-[13px] text-white font-bold tracking-wider uppercase mb-2">TRANSMISIÓN</h3>
+                                <p class="font-body-lg text-[11px] text-white/70 leading-relaxed">Grupo de transmisión Shimano Deore de 12 velocidades, optimizado para una retención de cadena impecable y cambios precisos.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- 6. Asiento / Sillín (top: 29%, left: 34%) -->
                     <div class="absolute group/hotspot top-[29%] left-[34%] pointer-events-auto hotspot-item">
-                        <div class="w-[18px] h-[18px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-                        <div class="w-[18px] h-[18px] bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
-                        <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-top">
-                            <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-                                <p class="font-label-mono text-[10px] md:text-[11px] text-white tracking-widest uppercase">SILLÍN ERGONÓMICO PRO TRAIL</p>
+                        <div class="w-[20px] h-[20px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                        <div class="hotspot-dot"></div>
+                        <div class="tooltip-line tooltip-left-line w-[15rem]"></div>
+                        <div class="absolute opacity-0 pointer-events-none hotspot-tooltip right-[15rem] top-[-5rem] w-[250px] whitespace-normal">
+                            <div class="bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 rounded-2xl p-5 text-left">
+                                <h3 class="font-headline-md text-[13px] text-white font-bold tracking-wider uppercase mb-2">SILLÍN ERGONÓMICO</h3>
+                                <p class="font-body-lg text-[11px] text-white/70 leading-relaxed">Sillín Pro Trail con canal prostático antipresión y rieles ligeros, garantizando comodidad y maniobrabilidad en descensos.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- 7. Maza / Cassette Trasero (top: 58%, left: 23.5%) -->
                     <div class="absolute group/hotspot top-[58%] left-[23.5%] pointer-events-auto hotspot-item">
-                        <div class="w-[18px] h-[18px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-                        <div class="w-[18px] h-[18px] bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
-                        <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-left">
-                            <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-                                <p class="font-label-mono text-[10px] md:text-[11px] text-white tracking-widest uppercase">CASSETTE ULTRA-LIGHT 12 VELOCIDADES</p>
+                        <div class="w-[20px] h-[20px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                        <div class="hotspot-dot"></div>
+                        <div class="tooltip-line tooltip-left-line w-[12rem]"></div>
+                        <div class="absolute opacity-0 pointer-events-none hotspot-tooltip right-[12rem] top-[-5rem] w-[250px] whitespace-normal">
+                            <div class="bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 rounded-2xl p-5 text-left">
+                                <h3 class="font-headline-md text-[13px] text-white font-bold tracking-wider uppercase mb-2">CASSETTE ULTRA-LIGHT</h3>
+                                <p class="font-body-lg text-[11px] text-white/70 leading-relaxed">Maza de acople rápido y cassette con relación optimizada para trepadas empinadas y máxima durabilidad.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- 8. Sistema de Ruedas / Neumáticos (top: 65%, left: 82%) -->
                     <div class="absolute group/hotspot top-[65%] left-[82%] pointer-events-auto hotspot-item">
-                        <div class="w-[18px] h-[18px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
-                        <div class="w-[18px] h-[18px] bg-white rounded-full relative shadow-lg z-10 cursor-pointer hotspot-dot transition-all duration-300"></div>
-                        <div class="absolute whitespace-nowrap opacity-0 transition-all duration-500 pointer-events-none z-30 hotspot-tooltip tooltip-right">
-                            <div class="bg-black/85 backdrop-blur-md px-4 py-2 border border-secondary-container/50 rounded-lg">
-                                <p class="font-label-mono text-[10px] md:text-[11px] text-white tracking-widest uppercase">NEUMÁTICOS TUBELESS COMPETICIÓN</p>
+                        <div class="w-[20px] h-[20px] bg-secondary-container rounded-full animate-ping absolute opacity-50"></div>
+                        <div class="hotspot-dot"></div>
+                        <div class="tooltip-line tooltip-right-line w-[10rem]"></div>
+                        <div class="absolute opacity-0 pointer-events-none hotspot-tooltip left-[10rem] top-[-5rem] w-[250px] whitespace-normal">
+                            <div class="bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 rounded-2xl p-5 text-left">
+                                <h3 class="font-headline-md text-[13px] text-white font-bold tracking-wider uppercase mb-2">RUEDAS Y NEUMÁTICOS</h3>
+                                <p class="font-body-lg text-[11px] text-white/70 leading-relaxed">Llantas de aluminio de doble pared listas para tubeless, calzadas con neumáticos de alta tracción y protección antipinchazos.</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
     </div>
     
     <!-- Mobile Specifications Grid (visible only on mobile/tablet) -->
@@ -868,155 +1078,248 @@
 </div>
 </section>
 <!-- Módulo 5 (Ingeniería de Precisión) -->
-<section class="bg-white md:h-screen flex flex-col justify-center py-10 md:py-12 overflow-hidden text-[#1e1411]" id="components">
-<div class="text-center mb-6 md:mb-8 px-edge-margin reveal-on-scroll shrink-0">
-    <h2 class="font-display-lg text-[32px] md:text-[48px] text-[#1e1411] tracking-tighter uppercase font-bold mb-1">TECNOLOGÍA DE PUNTA</h2>
-    <p class="font-body-lg text-[15px] md:text-[17px] text-[#1e1411]/80 max-w-2xl mt-3 leading-relaxed mx-auto">
-        Cada elemento de la Amphion responde a un estándar de precisión absoluta, integrando componentes de última generación que redefinen la conexión entre el ciclista y el terreno.
-    </p>
-</div>
-<div class="relative w-full h-[45vh] md:h-[48vh] flex items-center justify-center px-edge-margin gap-6 reveal-on-scroll">
-<div class="carousel-item inactive h-full rounded-2xl overflow-hidden relative" onclick="activateSlide(this)">
-    <img class="w-full h-full object-cover" src="assets/cockpit.png"/>
-    <div class="absolute inset-0 bg-black/25 transition-all duration-500 pointer-events-none"></div>
-    <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
-    <div class="absolute bottom-0 left-0 w-full p-4 xs:p-6 md:p-8 text-white text-center transition-all duration-500 carousel-text-box z-20" style="opacity: 0">
-        <h3 class="font-headline-md text-[18px] xs:text-[22px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">COCKPIT</h3>
-        <p class="font-body-lg text-[13px] xs:text-[15px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Manubrio integrado de carbono UD para una rigidez máxima y guiado interno de cables.</p>
+<section class="bg-white md:h-screen flex flex-col justify-center py-24 md:py-36 overflow-hidden text-[#1e1411]" id="components">
+<div class="max-w-[90rem] mx-auto w-full px-edge-margin flex flex-col justify-center items-center">
+    <div class="text-center mb-6 md:mb-8 reveal-on-scroll shrink-0 w-full">
+        <h2 class="font-display-lg text-[32px] md:text-[56px] text-[#1e1411] tracking-tighter uppercase font-bold mb-1 leading-tight">TECNOLOGÍA DE PUNTA</h2>
+        <p class="font-body-lg text-[16px] md:text-[18px] text-[#1e1411]/80 max-w-2xl mt-4 leading-relaxed mx-auto">
+            Cada elemento de la Amphion responde a un estándar de precisión absoluta, integrando componentes de última generación que redefinen la conexión entre el ciclista y el terreno.
+        </p>
     </div>
-</div>
-<div class="carousel-item active h-full rounded-2xl overflow-hidden relative shadow-2xl" onclick="activateSlide(this)">
-    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvtamohyA7NqA-0UXCv4of-xnhzfO-VTC1Wdgjz4v6sicBYeesd2eH5vJcQ7VQ68YGEROpitNLbDDlup5pBlF7bVU_jecXy4iSmE7PMyYdIoP08whnAmzKVYdPCD_3rJ_HJmWfJP5jHb1a-1Eo-fd0U2Bvwq2R95RzBf64pd_TGVfZQRVSgBHzNqS7Xrq8MVzy5DDc2Tp1BSoRBIQX9cjGpE44mYZz5DV-aHHP46ToTZM4XJV8Hcy5MdlyRMSFAvJki1D2j12JK_g"/>
-    <div class="absolute inset-0 bg-black/15 transition-all duration-500 pointer-events-none"></div>
-    <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
-    <div class="absolute bottom-0 left-0 w-full p-4 xs:p-6 md:p-8 text-white text-center transition-all duration-500 carousel-text-box z-20">
-        <h3 class="font-headline-md text-[18px] xs:text-[22px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">DRIVETRAIN</h3>
-        <p class="font-body-lg text-[13px] xs:text-[15px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Transmisión electrónica inalámbrica para cambios perfectos bajo carga.</p>
+    <div class="relative w-full h-[45vh] md:h-[48vh] flex items-center justify-center gap-6 reveal-on-scroll">
+    <div class="carousel-item active h-full rounded-2xl overflow-hidden relative shadow-2xl" onclick="activateSlide(this)">
+        <img class="w-full h-full object-cover" src="assets/cockpit.png"/>
+        <div class="absolute inset-0 bg-black/15 transition-all duration-500 pointer-events-none"></div>
+        <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
+        <div class="absolute bottom-0 left-0 w-full p-4 xs:p-6 md:p-8 text-white text-center transition-all duration-500 carousel-text-box z-20">
+            <h3 class="font-headline-md text-[18px] xs:text-[22px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">COCKPIT</h3>
+            <p class="font-body-lg text-[13px] xs:text-[15px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Manubrio integrado de carbono UD para una rigidez máxima y guiado interno de cables.</p>
+        </div>
     </div>
-</div>
-<div class="carousel-item inactive h-full rounded-2xl overflow-hidden relative" onclick="activateSlide(this)">
-    <img class="w-full h-full object-cover" src="assets/suspension.png"/>
-    <div class="absolute inset-0 bg-black/25 transition-all duration-500 pointer-events-none"></div>
-    <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
-    <div class="absolute bottom-0 left-0 w-full p-4 xs:p-6 md:p-8 text-white text-center transition-all duration-500 carousel-text-box z-20" style="opacity: 0">
-        <h3 class="font-headline-md text-[18px] xs:text-[22px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">SUSPENSIÓN</h3>
-        <p class="font-body-lg text-[13px] xs:text-[15px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Horquilla delantera con amortiguación optimizada y bloqueo remoto electrónico.</p>
+    <div class="carousel-item inactive h-full rounded-2xl overflow-hidden relative" onclick="activateSlide(this)">
+        <img class="w-full h-full object-cover" src="assets/drivetrain.png"/>
+        <div class="absolute inset-0 bg-black/25 transition-all duration-500 pointer-events-none"></div>
+        <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
+        <div class="absolute bottom-0 left-0 w-full p-4 xs:p-6 md:p-8 text-white text-center transition-all duration-500 carousel-text-box z-20" style="opacity: 0">
+            <h3 class="font-headline-md text-[18px] xs:text-[22px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">DRIVETRAIN</h3>
+            <p class="font-body-lg text-[13px] xs:text-[15px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Transmisión electrónica inalámbrica para cambios perfectos bajo carga.</p>
+        </div>
     </div>
-</div>
-</div>
+    <div class="carousel-item inactive h-full rounded-2xl overflow-hidden relative" onclick="activateSlide(this)">
+        <img class="w-full h-full object-cover" src="assets/suspension.png"/>
+        <div class="absolute inset-0 bg-black/25 transition-all duration-500 pointer-events-none"></div>
+        <div class="absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-all duration-500 z-10"></div>
+        <div class="absolute bottom-0 left-0 w-full p-4 xs:p-6 md:p-8 text-white text-center transition-all duration-500 carousel-text-box z-20" style="opacity: 0">
+            <h3 class="font-headline-md text-[18px] xs:text-[22px] md:text-[28px] mb-2 uppercase text-white font-bold tracking-wide">SUSPENSIÓN</h3>
+            <p class="font-body-lg text-[13px] xs:text-[15px] md:text-[18px] text-white font-medium leading-relaxed max-w-lg mx-auto">Horquilla delantera con amortiguación optimizada y bloqueo remoto electrónico.</p>
+        </div>
+    </div>
+    </div>
 
-<!-- Dots indicators -->
-<div class="flex justify-center gap-3 mt-6 reveal-on-scroll shrink-0">
-    <button class="carousel-dot w-2.5 h-2.5 rounded-full bg-[#1e1411]/20 hover:bg-secondary-container transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(0)" aria-label="Slide 1"></button>
-    <button class="carousel-dot w-2.5 h-2.5 rounded-full bg-secondary-container hover:bg-secondary-container transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(1)" aria-label="Slide 2"></button>
-    <button class="carousel-dot w-2.5 h-2.5 rounded-full bg-[#1e1411]/20 hover:bg-secondary-container transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(2)" aria-label="Slide 3"></button>
+    <!-- Dots indicators -->
+    <div class="flex justify-center gap-3 mt-6 reveal-on-scroll shrink-0">
+        <button class="carousel-dot w-2.5 h-2.5 rounded-full bg-[#1e1411]/20 hover:bg-secondary-container transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(0)" aria-label="Slide 1"></button>
+        <button class="carousel-dot w-2.5 h-2.5 rounded-full bg-secondary-container hover:bg-secondary-container transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(1)" aria-label="Slide 2"></button>
+        <button class="carousel-dot w-2.5 h-2.5 rounded-full bg-[#1e1411]/20 hover:bg-secondary-container transition-all duration-300 cursor-pointer" onclick="activateSlideByIndex(2)" aria-label="Slide 3"></button>
+    </div>
 </div>
 </section>
 <!-- Módulo 5.5 (Customización) -->
-<section id="customizer" class="relative bg-white flex flex-col justify-center py-24 md:py-36 px-edge-margin border-b border-[#1e1411]/10 overflow-hidden">
-    <div class="max-w-[90rem] mx-auto w-full lg:aspect-[16/9] lg:max-h-[70vh] grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative">
+<section id="customizer" class="relative min-h-screen flex flex-col justify-center py-24 md:py-36 px-edge-margin overflow-hidden bg-[#1b110e]">
+    <!-- Background Stack for smooth, flicker-free transitions -->
+    <div class="absolute inset-0 z-0">
+        <img id="custom-bg-0" class="customizer-bg absolute inset-0 w-full h-full object-cover object-center opacity-100 z-10 transition-opacity duration-500 ease-in-out select-none" src="assets/aspecto1.png" alt="Fondo Gris Cromo"/>
+        <img id="custom-bg-1" class="customizer-bg absolute inset-0 w-full h-full object-cover object-center opacity-0 z-0 transition-opacity duration-500 ease-in-out select-none" src="assets/aspecto2.png" alt="Fondo Rosa Neo"/>
+        <img id="custom-bg-2" class="customizer-bg absolute inset-0 w-full h-full object-cover object-center opacity-0 z-0 transition-opacity duration-500 ease-in-out select-none" src="assets/aspecto3.png" alt="Fondo Verde Eléctrico"/>
+    </div>
+    
+    <!-- Gradient overlay from the left to improve text legibility -->
+    <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent pointer-events-none z-10"></div>
+    
+    <div class="max-w-[90rem] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
 
         <!-- Contenedor Izquierdo: Textos e interactividad -->
-        <div class="lg:col-span-5 flex flex-col justify-center reveal-on-scroll order-2 lg:order-1">
-            <h2 class="font-display-lg text-[32px] md:text-[56px] text-[#1e1411] tracking-tighter uppercase font-bold mb-8">ASPECTOS</h2>
+        <div class="lg:col-span-5 flex flex-col justify-center reveal-on-scroll order-2 lg:order-1 relative z-20">
+            <h2 class="font-display-lg text-[32px] md:text-[56px] text-white tracking-tighter uppercase font-bold mb-4 leading-none">ASPECTOS</h2>
+            
+            <p class="font-body-lg text-[16px] md:text-[18px] text-white mb-8 leading-relaxed max-w-md">
+                Cada color expresa una identidad.<br/>
+                Elige el que mejor va con tu estilo<br/>
+                y lleva tu Amphion al siguiente nivel.
+            </p>
             
             <!-- Swatches (Wide premium cards) -->
-            <div class="flex flex-col gap-5 max-w-lg w-full">
+            <div class="flex flex-col gap-4 max-w-lg w-full mb-8">
                 <!-- Color 1 -->
-                <div class="customizer-swatch active group relative bg-[#f5eeea] border border-secondary-container shadow-md transition-all duration-300 rounded-2xl p-6 flex items-center justify-between gap-6 cursor-pointer select-none" onclick="selectColor(0)">
-                    <div class="flex items-center gap-5">
-                        <!-- Dual dot color indicator -->
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#8A8D8F] to-[#1A1A1A] border border-black/10 flex items-center justify-center shrink-0"></div>
+                <div class="customizer-swatch active group relative bg-neutral-900/60 border border-secondary shadow-md transition-all duration-300 rounded-2xl p-5 flex items-center justify-between gap-6 cursor-pointer select-none" onclick="selectColor(0)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8A8D8F] to-[#1A1A1A] border border-white/10 flex items-center justify-center shrink-0"></div>
                         <div class="flex flex-col">
-                            <span class="font-headline-md text-[18px] md:text-[22px] font-bold text-[#1e1411] tracking-wide uppercase transition-colors group-hover:text-secondary-container">GRIS CROMO</span>
-                            <span class="font-label-mono text-[12px] md:text-[13px] text-[#1e1411]/60">CHROME GREY / ED. ESP.</span>
+                            <span class="font-headline-md text-[16px] md:text-[18px] font-bold text-white tracking-wide uppercase">GRIS CROMO</span>
+                            <span class="font-label-mono text-[11px] text-white/50">CHROME GREY / ED. ESP.</span>
                         </div>
                     </div>
+                    <span class="material-symbols-outlined text-secondary transition-colors text-[22px]">arrow_forward</span>
                 </div>
 
                 <!-- Color 2 -->
-                <div class="customizer-swatch group relative bg-white/80 border border-[#1e1411]/10 hover:border-secondary-container/40 transition-all duration-300 rounded-2xl p-6 flex items-center justify-between gap-6 cursor-pointer select-none" onclick="selectColor(1)">
-                    <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#ff007f] to-[#1A1A1A] border border-black/10 flex items-center justify-center shrink-0"></div>
+                <div class="customizer-swatch group relative bg-neutral-900/60 border border-white/5 hover:border-secondary/40 transition-all duration-300 rounded-2xl p-5 flex items-center justify-between gap-6 cursor-pointer select-none" onclick="selectColor(1)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#ff007f] to-[#1A1A1A] border border-white/10 flex items-center justify-center shrink-0"></div>
                         <div class="flex flex-col">
-                            <span class="font-headline-md text-[18px] md:text-[22px] font-bold text-[#1e1411] tracking-wide uppercase transition-colors group-hover:text-secondary-container">ROSA NEO</span>
-                            <span class="font-label-mono text-[12px] md:text-[13px] text-[#1e1411]/60">NEON PINK / DESTELLANTE</span>
+                            <span class="font-headline-md text-[16px] md:text-[18px] font-bold text-white tracking-wide uppercase">ROSA NEO</span>
+                            <span class="font-label-mono text-[11px] text-white/50">NEON PINK / DESTELLANTE</span>
                         </div>
                     </div>
+                    <span class="material-symbols-outlined text-white/40 group-hover:text-secondary transition-colors text-[22px]">arrow_forward</span>
                 </div>
 
                 <!-- Color 3 -->
-                <div class="customizer-swatch group relative bg-white/80 border border-[#1e1411]/10 hover:border-secondary-container/40 transition-all duration-300 rounded-2xl p-6 flex items-center justify-between gap-6 cursor-pointer select-none" onclick="selectColor(2)">
-                    <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#39ff14] to-[#1A1A1A] border border-black/10 flex items-center justify-center shrink-0"></div>
+                <div class="customizer-swatch group relative bg-neutral-900/60 border border-white/5 hover:border-secondary/40 transition-all duration-300 rounded-2xl p-5 flex items-center justify-between gap-6 cursor-pointer select-none" onclick="selectColor(2)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#39ff14] to-[#1A1A1A] border border-white/10 flex items-center justify-center shrink-0"></div>
                         <div class="flex flex-col">
-                            <span class="font-headline-md text-[18px] md:text-[22px] font-bold text-[#1e1411] tracking-wide uppercase transition-colors group-hover:text-secondary-container">VERDE ELÉCTRICO</span>
-                            <span class="font-label-mono text-[12px] md:text-[13px] text-[#1e1411]/60">ELECTRIC LIME / RACING</span>
+                            <span class="font-headline-md text-[16px] md:text-[18px] font-bold text-white tracking-wide uppercase">VERDE ELÉCTRICO</span>
+                            <span class="font-label-mono text-[11px] text-white/50">ELECTRIC LIME / RACING</span>
                         </div>
                     </div>
+                    <span class="material-symbols-outlined text-white/40 group-hover:text-secondary transition-colors text-[22px]">arrow_forward</span>
                 </div>
             </div>
 
             <!-- Technical details metadata box -->
-            <div class="mt-10 pt-8 border-t border-[#1e1411]/20 max-w-lg w-full">
-                <div>
-                    <span class="font-label-mono text-[11px] text-[#1e1411]/60 uppercase block mb-1">ACABADO DEL CUADRO</span>
-                    <span id="custom-meta-finish" class="font-label-mono text-[15px] md:text-[18px] text-[#1e1411] font-bold tracking-wider">BRILLANTE ANODIZADO</span>
+            <div class="pt-6 border-t border-white/10 max-w-lg w-full">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full border border-white/25 flex items-center justify-center text-white/90 shrink-0">
+                        <span class="material-symbols-outlined text-[24px]">diamond</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-label-mono text-[10px] text-secondary tracking-widest uppercase block mb-1">ACABADO DEL CUADRO</span>
+                        <span id="custom-meta-finish" class="font-headline-md text-[18px] md:text-[20px] font-bold text-white tracking-wider uppercase mb-1">BRILLANTE ANODIZADO</span>
+                        <p id="custom-meta-desc" class="font-body-lg text-[13px] md:text-[14px] text-white/80 leading-relaxed max-w-sm">
+                            Tratamiento premium que maximiza la resistencia a la corrosión y realza el brillo del color.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Contenedor Derecho: Imagen y fondo luminoso -->
-        <div class="lg:col-span-7 relative w-full h-[280px] sm:h-[400px] lg:h-full flex items-center justify-center reveal-on-scroll order-1 lg:order-2">
-            
-            <!-- Large Typography Watermark Background -->
-            <span class="absolute inset-0 flex items-center justify-center font-display-lg text-[180px] sm:text-[240px] md:text-[320px] lg:text-[220px] xl:text-[260px] text-[#1e1411]/[0.03] tracking-widest font-black pointer-events-none select-none">AMPHION</span>
-            
-            <!-- Color Ambient Glow Back Aura (Locked to Módulo 4 Light Brown #4a3126) -->
-            <div id="customizer-glow" class="absolute w-[60%] h-[60%] rounded-full blur-[100px] sm:blur-[120px] opacity-20 pointer-events-none transition-all duration-1000 bg-[#4a3126]"></div>
-
-            <!-- Image Stack (Preloaded PNGs for zero flicker, using transition opacity) -->
-            <div class="relative w-full h-full flex items-center justify-center z-10">
-                <!-- Color 1 -->
-                <img id="custom-bike-0" class="customizer-bike absolute w-full h-auto max-h-[92%] object-contain opacity-100 transition-opacity duration-700 ease-in-out pointer-events-none select-none" src="assets/color-1.png" alt="Venzo Amphion Gris Cromo"/>
-                <!-- Color 2 -->
-                <img id="custom-bike-1" class="customizer-bike absolute w-full h-auto max-h-[92%] object-contain opacity-0 transition-opacity duration-700 ease-in-out pointer-events-none select-none" src="assets/color-2.png" alt="Venzo Amphion Rosa Neo"/>
-                <!-- Color 3 -->
-                <img id="custom-bike-2" class="customizer-bike absolute w-full h-auto max-h-[92%] object-contain opacity-0 transition-opacity duration-700 ease-in-out pointer-events-none select-none" src="assets/color-3.png" alt="Venzo Amphion Verde Eléctrico"/>
-            </div>
-
-            <!-- Navigation Arrows (Centered vertically relative to the image container) -->
-            <div class="absolute inset-x-2 lg:-inset-x-12 top-1/2 -translate-y-1/2 flex justify-between items-center z-20 pointer-events-none">
-                <button onclick="navigateColor(-1)" class="w-12 h-12 rounded-full bg-white/85 border border-[#1e1411]/10 flex items-center justify-center text-[#1e1411] hover:bg-[#fe6b00] hover:text-white transition-all duration-300 shadow-md cursor-pointer pointer-events-auto" aria-label="Anterior">
-                    <span class="material-symbols-outlined text-[24px]">chevron_left</span>
-                </button>
-                <button onclick="navigateColor(1)" class="w-12 h-12 rounded-full bg-white/85 border border-[#1e1411]/10 flex items-center justify-center text-[#1e1411] hover:bg-[#fe6b00] hover:text-white transition-all duration-300 shadow-md cursor-pointer pointer-events-auto" aria-label="Siguiente">
-                    <span class="material-symbols-outlined text-[24px]">chevron_right</span>
-                </button>
-            </div>
-        </div>
+        <!-- Contenedor Derecho: Espacio reservado para ver la bicicleta en el fondo -->
+        <div class="lg:col-span-7 relative w-full aspect-[16/9] lg:h-[550px] pointer-events-none select-none order-1 lg:order-2"></div>
         
     </div>
 </section>
-<!-- Módulo 6 (Reserva Ya) -->
-<section class="relative bg-surface flex flex-col justify-center py-24 md:py-36 px-edge-margin overflow-hidden text-center" id="conversion">
-    <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 z-0">
-        <img class="w-full h-full object-cover object-center" src="assets/fondo.jpg" alt="Fondo Trail"/>
-        <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/30 to-surface/80"></div>
-        <div class="absolute inset-0 bg-[#1b110e]/40 mix-blend-multiply"></div>
-    </div>
-    <!-- Content -->
-    <div class="relative z-10 max-w-[90rem] mx-auto w-full lg:aspect-[16/9] lg:max-h-[70vh] flex flex-col justify-center items-center reveal-on-scroll">
-        <h2 class="font-display-lg text-[36px] md:text-[64px] text-white tracking-tighter uppercase font-bold mb-6 leading-none">
-            EL FUTURO DEL TRAIL<br/>ESTÁ AQUÍ
-        </h2>
-        <p class="font-body-lg text-[16px] md:text-[18px] text-on-surface-variant max-w-2xl mb-10 leading-relaxed">
-            Únete a la vanguardia. Reserva hoy tu Venzo Amphion y experimenta la integración absoluta entre ingeniería orgánica y tracción total.
+<!-- Módulo 6 (Opiniones) -->
+<section id="reviews" class="relative bg-surface flex flex-col justify-center py-24 md:py-36 px-edge-margin overflow-hidden bg-[#1b110e]">
+    <!-- Title and Subtitle -->
+    <div class="relative z-10 max-w-[90rem] mx-auto w-full flex flex-col justify-center items-center reveal-on-scroll text-center mb-16 md:mb-24">
+        <h2 class="font-display-lg text-[32px] md:text-[56px] text-white tracking-tighter uppercase font-bold mb-2">OPINIONES</h2>
+        <p class="font-body-lg text-[16px] md:text-[18px] text-white/70 max-w-xl mx-auto leading-relaxed">
+            La voz de quienes ya desafían los límites del trail.
         </p>
-        <button class="px-12 py-5 bg-secondary-container text-white rounded-full font-label-mono text-[14px] uppercase tracking-widest hover:bg-secondary transition-all duration-300 shadow-2xl font-bold">
-            Reserva tu amphion
-        </button>
+    </div>
+
+    <!-- Review Cards Grid -->
+    <div class="relative z-10 max-w-[90rem] mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Review 1 -->
+        <div class="relative group overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 transition-all duration-300 flex flex-col justify-between reveal-on-scroll min-h-[320px]">
+            <div>
+                <div class="flex items-center gap-1 mb-4 text-[#fe6b00]">
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                </div>
+                <p class="font-body-lg text-[13px] md:text-[14px] text-white/90 leading-relaxed italic mb-6">
+                    "La Amphion superó todas mis expectativas. La absorción del chasis de carbono en descensos técnicos es una locura, se siente increíblemente rígida y veloz."
+                </p>
+            </div>
+            <div class="flex items-center gap-3 border-t border-white/10 pt-4 mt-auto">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-[#441700] flex items-center justify-center text-white font-bold text-[13px] uppercase shrink-0">
+                    MA
+                </div>
+                <div class="flex flex-col min-w-0">
+                    <span class="font-headline-md text-[13px] md:text-[14px] font-bold text-white tracking-wide truncate">Matías Albarracín</span>
+                    <span class="font-label-mono text-[10px] text-white/50 truncate">Ciclista Amateur MTB / Córdoba</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="relative group overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 transition-all duration-300 flex flex-col justify-between reveal-on-scroll min-h-[320px]">
+            <div>
+                <div class="flex items-center gap-1 mb-4 text-[#fe6b00]">
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                </div>
+                <p class="font-body-lg text-[13px] md:text-[14px] text-white/90 leading-relaxed italic mb-6">
+                    "El cockpit integrado de carbono UD marca una diferencia enorme en el control de la dirección. La respuesta al pedalear en curvas cerradas es inmediata."
+                </p>
+            </div>
+            <div class="flex items-center gap-3 border-t border-white/10 pt-4 mt-auto">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-[#441700] flex items-center justify-center text-white font-bold text-[13px] uppercase shrink-0">
+                    SG
+                </div>
+                <div class="flex flex-col min-w-0">
+                    <span class="font-headline-md text-[13px] md:text-[14px] font-bold text-white tracking-wide truncate">Sofía Galliano</span>
+                    <span class="font-label-mono text-[10px] text-white/50 truncate">Competidora XC / Mendoza</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="relative group overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 transition-all duration-300 flex flex-col justify-between reveal-on-scroll min-h-[320px]">
+            <div>
+                <div class="flex items-center gap-1 mb-4 text-[#fe6b00]">
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                </div>
+                <p class="font-body-lg text-[13px] md:text-[14px] text-white/90 leading-relaxed italic mb-6">
+                    "Subir pendientes empinadas con la ligereza del chasis y la suavidad del cassette de 12 velocidades es increíble. El mejor cuadro que he probado."
+                </p>
+            </div>
+            <div class="flex items-center gap-3 border-t border-white/10 pt-4 mt-auto">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-[#441700] flex items-center justify-center text-white font-bold text-[13px] uppercase shrink-0">
+                    ER
+                </div>
+                <div class="flex flex-col min-w-0">
+                    <span class="font-headline-md text-[13px] md:text-[14px] font-bold text-white tracking-wide truncate">Esteban Rossi</span>
+                    <span class="font-label-mono text-[10px] text-white/50 truncate">Guía de MTB / Bariloche</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review 4 -->
+        <div class="relative group overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white/[0.04] to-white/[0.01] backdrop-blur-xl border border-white/10 shadow-[0_12px_32px_rgba(27,17,14,0.3)] hover:border-secondary/30 transition-all duration-300 flex flex-col justify-between reveal-on-scroll min-h-[320px]">
+            <div>
+                <div class="flex items-center gap-1 mb-4 text-[#fe6b00]">
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                </div>
+                <p class="font-body-lg text-[13px] md:text-[14px] text-white/90 leading-relaxed italic mb-6">
+                    "Los frenos hidráulicos de disco y la tracción de los neumáticos tubeless me dieron la seguridad necesaria para bajar mis tiempos en senderos húmedos."
+                </p>
+            </div>
+            <div class="flex items-center gap-3 border-t border-white/10 pt-4 mt-auto">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-[#441700] flex items-center justify-center text-white font-bold text-[13px] uppercase shrink-0">
+                    LF
+                </div>
+                <div class="flex flex-col min-w-0">
+                    <span class="font-headline-md text-[13px] md:text-[14px] font-bold text-white tracking-wide truncate">Lucía Fernández</span>
+                    <span class="font-label-mono text-[10px] text-white/50 truncate">Entusiasta del Trail / Salta</span>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 </main>
@@ -1081,42 +1384,52 @@
     function selectColor(index) {
         currentColorIndex = index;
         const swatches = document.querySelectorAll('.customizer-swatch');
-        const bikes = document.querySelectorAll('.customizer-bike');
+        const bgs = document.querySelectorAll('.customizer-bg');
         const metaFinish = document.getElementById('custom-meta-finish');
+        const metaDesc = document.getElementById('custom-meta-desc');
 
         const finishes = ['BRILLANTE ANODIZADO', 'MATE SATINADO', 'MATE RACING'];
+        const descriptions = [
+            'Tratamiento premium que maximiza la resistencia a la corrosión y realza el brillo del color.',
+            'Acabado mate de textura suave que absorbe reflejos y destaca las líneas agresivas del cuadro.',
+            'Capa ultra-delgada diseñada para competiciones que reduce peso y repele el barro.'
+        ];
 
         swatches.forEach((swatch, idx) => {
+            const arrow = swatch.querySelector('.material-symbols-outlined');
             if (idx === index) {
-                swatch.classList.add('active', 'border-secondary-container', 'bg-[#f5eeea]', 'shadow-md');
-                swatch.classList.remove('border-[#1e1411]/10', 'bg-white/80');
+                swatch.classList.add('active', 'border-secondary', 'bg-[#1c120e]/90');
+                swatch.classList.remove('border-white/5', 'bg-neutral-900/60');
+                if (arrow) {
+                    arrow.classList.remove('text-white/40');
+                    arrow.classList.add('text-secondary');
+                }
             } else {
-                swatch.classList.remove('active', 'border-secondary-container', 'bg-[#f5eeea]', 'shadow-md');
-                swatch.classList.add('border-[#1e1411]/10', 'bg-white/80');
+                swatch.classList.remove('active', 'border-secondary', 'bg-[#1c120e]/90');
+                swatch.classList.add('border-white/5', 'bg-neutral-900/60');
+                if (arrow) {
+                    arrow.classList.remove('text-secondary');
+                    arrow.classList.add('text-white/40');
+                }
             }
         });
 
-        bikes.forEach((bike, idx) => {
+        bgs.forEach((bg, idx) => {
             if (idx === index) {
-                bike.classList.remove('opacity-0');
-                bike.classList.add('opacity-100');
+                bg.classList.remove('opacity-0', 'z-0');
+                bg.classList.add('opacity-100', 'z-10');
             } else {
-                bike.classList.remove('opacity-100');
-                bike.classList.add('opacity-0');
+                bg.classList.remove('opacity-100', 'z-10');
+                bg.classList.add('opacity-0', 'z-0');
             }
         });
 
         if (metaFinish) {
             metaFinish.textContent = finishes[index];
         }
-    }
-
-    function navigateColor(direction) {
-        const totalColors = 3;
-        let nextIndex = currentColorIndex + direction;
-        if (nextIndex >= totalColors) nextIndex = 0;
-        if (nextIndex < 0) nextIndex = totalColors - 1;
-        selectColor(nextIndex);
+        if (metaDesc) {
+            metaDesc.textContent = descriptions[index];
+        }
     }
 
 
